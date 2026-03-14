@@ -2849,7 +2849,7 @@ self.addEventListener('fetch', e => {
 
         // ==================== RESET COMPLETO DEL SISTEMA ====================
         async function resetTodoElSistema() {
-            const confirm1 = confirm('⚠️ ATENCIÓN\n\n¿Está seguro que quiere BORRAR TODOS los datos?\n\nEsto borrará:\n- Todos los estudiantes\n- Todas las notas\n- Toda la asistencia\n- Copias, talleres y rúbrica\n- Google Sheets en la nube\n\nEsta acción NO se puede deshacer.');
+            const confirm1 = confirm('⚠️ ATENCIÓN\n\n¿Está seguro que quiere BORRAR TODOS los datos?\n\nEsto borrará:\n- Todas las notas\n- Toda la asistencia\n- Copias, talleres y rúbrica\n- Google Sheets en la nube\n\nLOS ESTUDIANTES SE CONSERVAN.\n\nEsta acción NO se puede deshacer.');
             if (!confirm1) return;
 
             const palabra = window.prompt('Para confirmar escriba exactamente: BORRAR');
