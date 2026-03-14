@@ -999,6 +999,7 @@ self.addEventListener('fetch', e => {
     <div id="syncBar">
         <span id="syncText">⏳ Iniciando...</span>
         <button onclick="loadFromCloud()" style="background:#1565c0;color:white;border:none;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:12px;font-weight:600;">☁️ Cargar desde Nube</button>
+        <button onclick="resetTodoElSistema()" style="background:#7f1d1d;color:white;border:none;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:12px;font-weight:600;">🗑️ Borrar Todo</button>
     </div>
 
     <div class="container">
@@ -2845,6 +2846,55 @@ self.addEventListener('fetch', e => {
             localStorage.setItem(key,'1'); saveNotas();
         }
 
+
+        // ==================== RESET COMPLETO DEL SISTEMA ====================
+        async function resetTodoElSistema() {
+            const confirm1 = confirm('⚠️ ATENCIÓN\n\n¿Está seguro que quiere BORRAR TODOS los datos?\n\nEsto borrará:\n- Todos los estudiantes\n- Todas las notas\n- Toda la asistencia\n- Copias, talleres y rúbrica\n- Google Sheets en la nube\n\nEsta acción NO se puede deshacer.');
+            if (!confirm1) return;
+
+            const palabra = window.prompt('Para confirmar escriba exactamente: BORRAR');
+            if (palabra !== 'BORRAR') {
+                alert('Cancelado — no se borró nada.');
+                return;
+            }
+
+            const bar = document.getElementById('syncText');
+            bar.textContent = '🗑️ Borrando datos...';
+
+            // 1. Borrar Google Sheets en la nube
+            try {
+                await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({action: 'clear'})
+                });
+            } catch(e) {
+                // no-cors no da error, continuar
+            }
+
+            // 2. Borrar solo datos ingresados — conservar estudiantes y configuración
+            const teacher = localStorage.getItem('teacherName');
+            const students = localStorage.getItem('shared_students');
+            // Conservar también las claves de preload para que no se recarguen
+            const preloadKeys = {};
+            ['preloaded_12C','preloaded_12A_v2','preloaded_12B_v2','preloaded_12D_v2','preloaded_11D_v1'].forEach(k => {
+                preloadKeys[k] = localStorage.getItem(k);
+            });
+
+            localStorage.clear();
+
+            // Restaurar lo que se conserva
+            if (teacher) localStorage.setItem('teacherName', teacher);
+            if (students) localStorage.setItem('shared_students', students);
+            Object.keys(preloadKeys).forEach(k => { if (preloadKeys[k]) localStorage.setItem(k, preloadKeys[k]); });
+
+            // 3. Limpiar solo datos en memoria, no estudiantes
+            // sharedStudents se restaura del localStorage al recargar
+
+            bar.textContent = '✅ Todo borrado. Recargando...';
+            setTimeout(() => location.reload(), 1500);
+        }
         // ==================== COPIAS ====================
         let copiasData = {};
         function loadCopias(){const s=localStorage.getItem('copias_data');if(s)copiasData=JSON.parse(s);}
