@@ -9,59 +9,9 @@
     <!-- ==================== SERVICE WORKER OFFLINE ==================== -->
     <script>
     if ('serviceWorker' in navigator) {
-        // Service Worker como Blob — funciona desde un solo archivo HTML
-        const swCode = `
-const CACHE = 'meduca-2026-v1';
-const URLS = [location.href];
-
-self.addEventListener('install', e => {
-    e.waitUntil(
-        caches.open(CACHE).then(cache => {
-            return fetch(self.location.origin + self.location.pathname.replace('sw-blob',''))
-                .then(r => cache.put(new Request('/meduca-app'), r))
-                .catch(() => {});
-        })
-    );
-    self.skipWaiting();
-});
-
-self.addEventListener('activate', e => {
-    e.waitUntil(clients.claim());
-});
-
-self.addEventListener('fetch', e => {
-    // Solo interceptar la página principal
-    if (e.request.mode === 'navigate') {
-        e.respondWith(
-            fetch(e.request).catch(() => caches.match(new Request('/meduca-app')))
-        );
-    }
-});
-`;
-        const blob = new Blob([swCode], {type: 'application/javascript'});
-        const swUrl = URL.createObjectURL(blob);
-        navigator.serviceWorker.register(swUrl, {scope: '/'})
-            .then(reg => {
-                // Guardar el HTML completo en cache manual como respaldo
-                if ('caches' in window) {
-                    caches.open('meduca-2026-v1').then(cache => {
-                        cache.put(new Request(location.href), new Response(document.documentElement.outerHTML, {
-                            headers: {'Content-Type': 'text/html; charset=utf-8'}
-                        }));
-                    });
-                }
-            })
-            .catch(err => console.log('SW no disponible:', err));
-    }
-
-    // Respaldo adicional: guardar en cache del navegador
-    if ('caches' in window) {
-        window.addEventListener('load', () => {
-            caches.open('meduca-2026-v1').then(cache => {
-                // Guardar página actual completa
-                fetch(location.href).then(r => cache.put(location.href, r)).catch(()=>{});
-            });
-        });
+        navigator.serviceWorker.register('./sw.js')
+            .then(() => console.log('SW registrado OK'))
+            .catch(err => console.log('SW error:', err));
     }
     </script>
     <!-- ==================== CONFIGURACIÓN GOOGLE SHEETS SYNC ==================== -->
