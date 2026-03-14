@@ -2565,6 +2565,7 @@
                 if (s) {
                     s[field] = value.trim().toUpperCase();
                     saveNotas();
+                    markPendingSync();
                 }
             });
         }
