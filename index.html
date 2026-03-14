@@ -2650,13 +2650,23 @@
             window._cloudCallback = function(data) {
                 try {
                     if (!data || !data.success) throw new Error('Sin datos');
-                    if (data.students)   localStorage.setItem('shared_students', JSON.stringify(data.students));
-                    if (data.grades)     localStorage.setItem('notas_grades', JSON.stringify(data.grades));
-                    if (data.attendance) localStorage.setItem('attendance', JSON.stringify(data.attendance));
-                    if (data.copias)     localStorage.setItem('copias_data', JSON.stringify(data.copias));
-                    if (data.talleres)   localStorage.setItem('talleres_data', JSON.stringify(data.talleres));
-                    if (data.rubrica)    localStorage.setItem('rubrica_data', JSON.stringify(data.rubrica));
-                    bar.textContent = '✅ Datos cargados. Recargando...';
+
+                    // Borrar TODO el localStorage primero
+                    // Lo que está en Google Sheets manda siempre
+                    const teacher = localStorage.getItem('teacherName');
+                    localStorage.clear();
+                    if (teacher) localStorage.setItem('teacherName', teacher);
+
+                    // Cargar exactamente lo que está en Sheets
+                    localStorage.setItem('shared_students', JSON.stringify(data.students || {}));
+                    localStorage.setItem('notas_grades',    JSON.stringify(data.grades    || {}));
+                    localStorage.setItem('attendance',      JSON.stringify(data.attendance|| {}));
+                    localStorage.setItem('copias_data',     JSON.stringify(data.copias    || {}));
+                    localStorage.setItem('talleres_data',   JSON.stringify(data.talleres  || {}));
+                    localStorage.setItem('rubrica_data',    JSON.stringify(data.rubrica   || {}));
+                    localStorage.setItem('syncPending', '');
+
+                    bar.textContent = '✅ Datos cargados desde Google Sheets. Recargando...';
                     setTimeout(() => location.reload(), 800);
                 } catch(e) {
                     bar.textContent = '⚠️ Error al cargar datos. Intente de nuevo.';
