@@ -70,7 +70,7 @@
 
                 const payload = {
                     writeKey: 'MEDUCA2026BOCA',
-                    students: studentsData ? JSON.parse(studentsData) : {},
+                    // NUNCA subir estudiantes automaticamente — solo notas y asistencia
                     attendance: attendanceData ? JSON.parse(attendanceData) : {},
                     grades: gradesData ? JSON.parse(gradesData) : {},
                     teacher: teacherName,
