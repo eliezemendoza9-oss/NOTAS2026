@@ -2581,29 +2581,29 @@
 
         // ==================== ESTUDIANTES 12C PRECARGADOS ====================
         function preloadStudents12C() {
-            const key = 'preloaded_12C';
+            const key = 'preloaded_12C_v2';
             if (localStorage.getItem(key)) return; // ya cargados
             
             if (!sharedStudents['12C']) sharedStudents['12C'] = [];
             if (sharedStudents['12C'].length > 0) return; // ya tiene estudiantes
 
             const lista = [
-                { name: 'AMADOR, VÍCTOR',        cedula: '4-796-2405' },
-                { name: 'BEJERANO, RODERIC',      cedula: '12-731-1810' },
-                { name: 'BEJERANO, JAVIER',       cedula: '12-722-1163' },
-                { name: 'BEJERANO, MAXIMILIANA',  cedula: '4-845-2454' },
-                { name: 'CONTRERAS, FIDELINA',    cedula: '4-841-378' },
-                { name: 'BEJERANO, LINA',         cedula: '4-846-1477' },
-                { name: 'MARCUCCI, EFRAÍN',       cedula: '12-724-2498' },
-                { name: 'GALLARDO, ROSA',         cedula: '12-718-1296' },
-                { name: 'GÓMEZ, OLMEDO',          cedula: '12-710-1618' },
-                { name: 'MARUCCI, LILIANA',       cedula: '12-795-975' },
-                { name: 'ORTIZ, MARITZEL',        cedula: '12-733-886' },
-                { name: 'PALACIO, RAÚL JOSÉ',     cedula: '12-718-2069' },
-                { name: 'RODRÍGUEZ, CECILIA',     cedula: '12-718-1814' },
-                { name: 'RODRÍGUEZ, LEONIDA',     cedula: '12-721-958' },
-                { name: 'SAMUDIO, IVÁN MAYNER',   cedula: '12-728-1802' },
-                { name: 'SANDOLLA, ANA',          cedula: '4-848-2303' },
+                { name: 'AMADOR, VICTOR',       cedula: '4-796-2405'  },
+                { name: 'BEJERANO, JAVIER',     cedula: '12-722-1163' },
+                { name: 'BEJERANO, MAXIMILIANA',cedula: '4-845-2454'  },
+                { name: 'BEJERANO, RODERIC',    cedula: '12-731-1810' },
+                { name: 'CONTRERAS, FIDELINA',  cedula: '4-841-378'   },
+                { name: 'GONZALEZ, LINA',       cedula: '4-846-1477'  },
+                { name: 'MARCUCCI, EFRAIN',     cedula: '12-724-2498' },
+                { name: 'ORTIZ, ROSA',          cedula: '12-718-1296' },
+                { name: 'PALACIO, CECILIA',     cedula: ''            },
+                { name: 'PALACIO, JOSE',        cedula: '12-718-2069' },
+                { name: 'PALACIO, LILIANA',     cedula: '12-795-975'  },
+                { name: 'PALACIO, MARITZEL',    cedula: '12-733-886'  },
+                { name: 'PALACIO, OLMEDO',      cedula: '12-710-1618' },
+                { name: 'QUINTERO, LEONIDA',    cedula: ''            },
+                { name: 'RIOS, MAYNER',         cedula: ''            },
+                { name: 'SANDOLLA, ANA',        cedula: ''            },
             ];
 
             lista.forEach((s, idx) => {
@@ -2644,10 +2644,34 @@
             if (!navigator.onLine) { alert('Sin internet. Conecte el Starlink e intente de nuevo.'); return; }
             const bar = document.getElementById('syncText');
             bar.textContent = '☁️ Guardando en Nube...';
-            await syncWithGoogleSheets();
-            bar.textContent = '✅ Guardado en Google Sheets.';
-            syncPending = false;
-            localStorage.removeItem('syncPending');
+
+            // Guardar Nube manual — incluye estudiantes para reflejar cambios
+            const studentsData = localStorage.getItem('shared_students');
+            const attendanceData = localStorage.getItem('attendance');
+            const gradesData = localStorage.getItem('notas_grades');
+
+            const payload = {
+                writeKey: 'MEDUCA2026BOCA',
+                manualSave: true,  // indica que es guardado manual con estudiantes
+                students:   studentsData   ? JSON.parse(studentsData)   : {},
+                attendance: attendanceData ? JSON.parse(attendanceData) : {},
+                grades:     gradesData     ? JSON.parse(gradesData)     : {},
+                syncDate:   new Date().toISOString()
+            };
+
+            try {
+                await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(payload),
+                    mode: 'no-cors'
+                });
+                bar.textContent = '✅ Guardado en Google Sheets.';
+                syncPending = false;
+                localStorage.removeItem('syncPending');
+            } catch(e) {
+                bar.textContent = '⚠️ Error al guardar. Verifique internet.';
+            }
             setTimeout(updateSyncBar, 2000);
         }
 
@@ -2727,7 +2751,7 @@
 
         // ==================== PRECARGAR GRUPOS ====================
         function preloadStudents12A() {
-            const key = 'preloaded_12A_v3';
+            const key = 'preloaded_12A_v4';
             if (localStorage.getItem(key)) return;
             sharedStudents['12A'] = [];
             const lista = [
@@ -2741,7 +2765,6 @@
                 { name: 'MONTEZUMA, NAPOLEON',  cedula: '4-849-779'   },
                 { name: 'PALACIO, PEDRO',       cedula: '12-730-2349' },
                 { name: 'PALACIO, ROLANDO',     cedula: '4-844-769'   },
-                { name: 'PALACIO, ADOLFO',      cedula: '12-710-352'  },
                 { name: 'PALACIOS, IRISNEL',    cedula: '12-713-1479' },
                 { name: 'RIOS, EFRAIN',         cedula: '12-729-438'  },
                 { name: 'SAMUDIO, DAIRA',       cedula: '4-848-100'   },
@@ -2772,26 +2795,36 @@
             localStorage.setItem(key,'1'); saveNotas();
         }
         function preloadStudents12D() {
-            const key = 'preloaded_12D_v2';
+            const key = 'preloaded_12D_v3';
             if (localStorage.getItem(key)) return;
             if (!sharedStudents['12D']) sharedStudents['12D'] = [];
             if (sharedStudents['12D'].length > 0) return;
             const lista = [
-                {name:'AMADOR, OFILIA',cedula:'4-846-2460'},{name:'BEJERANO, HEIDI',cedula:'12-728-1517'},
-                {name:'BEJERANO, LUIS',cedula:'12-738-356'},{name:'BEJERANO, MARILON',cedula:'12-725-966'},
-                {name:'BEJERANO, RUDIEL',cedula:'4-845-2063'},{name:'GALLEGO, GERARDO',cedula:'12-709-937'},
-                {name:'MIRANDA, EDIFIA',cedula:'12-733-1785'},{name:'PALACIO, ELIECER',cedula:'4-784-1230'},
-                {name:'PALACIOS, MIRELA',cedula:'12-703-194'},{name:'SALARIO, MARTIN',cedula:'12-722-658'},
-                {name:'SAMUDIO, EMILIANA',cedula:'12-704-1838'},{name:'SAMUDIO, HALKIN',cedula:'12-729-781'},
-                {name:'SAMUDIO, JONDY',cedula:'12-721-357'},{name:'SAMUDIO, MILTON',cedula:'12-730-2340'},
-                {name:'SAMUDIO, RONY',cedula:'12-725-946'},{name:'TUGRI, CRISTY',cedula:'4-840-2355'},
+                {name:'AMADOR, OFELIA',   cedula:'4-846-2460' },
+                {name:'BEJERANO, LEIDI',  cedula:'12-728-1517'},
+                {name:'BEJERANO, LUIS',   cedula:'12-738-356' },
+                {name:'BEJERANO, MARILIN',cedula:'12-725-966' },
+                {name:'BEJERANO, RUBIEL', cedula:'4-845-2063' },
+                {name:'GALLEGO, GERARDO', cedula:'12-709-937' },
+                {name:'MIRANDA, EDILIA',  cedula:'12-733-1785'},
+                {name:'PALACIO, ELIECER', cedula:'4-784-1230' },
+                {name:'PALACIO, MARTIN',  cedula:'12-722-658' },
+                {name:'PALACIO, MIXELA',  cedula:'12-703-194' },
+                {name:'QUINTERO, FELIX',  cedula:''           },
+                {name:'SAMUDIO, EMILIANA',cedula:'12-704-1838'},
+                {name:'SAMUDIO, LUCIANA', cedula:''           },
+                {name:'SAMUDIO, MILTON',  cedula:'12-730-2340'},
+                {name:'SAMUDIO, ROLBIN',  cedula:'12-729-781' },
+                {name:'SAMUDIO, RONY',    cedula:'12-725-946' },
+                {name:'SAMUDIO, YENDY',   cedula:'12-721-357' },
+                {name:'TUGRI, CRISTY',    cedula:'4-840-2355' },
             ];
             lista.forEach((s,i)=>sharedStudents['12D'].push({id:'p12d_'+(i+1),name:s.name,cedula:s.cedula,number:i+1}));
             localStorage.setItem(key,'1'); saveNotas();
         }
 
         function preloadStudents11D() {
-            const key = 'preloaded_11D_v1';
+            const key = 'preloaded_11D_v2';
             if (localStorage.getItem(key)) return;
             if (!sharedStudents['11D']) sharedStudents['11D'] = [];
             if (sharedStudents['11D'].length > 0) return;
@@ -2799,6 +2832,7 @@
                 {name:'BEJERANO, CARLO',      cedula:''},
                 {name:'BEJERANO, NICASIO',    cedula:''},
                 {name:'BEJERANO, RAFAEL',     cedula:''},
+                {name:'CLARA, VANESSA',       cedula:''},
                 {name:'GALLEGO, AGUSTIN',     cedula:''},
                 {name:'GALLEGO, ROSELINA',    cedula:''},
                 {name:'GALLEGO, YOEL',        cedula:''},
@@ -2809,7 +2843,6 @@
                 {name:'NIETO, JORLENY',       cedula:''},
                 {name:'ORTIZ, ROMAN',         cedula:''},
                 {name:'QUINTERO, ELEUTERIO',  cedula:''},
-                {name:'VANESSA CLARA, P',     cedula:''},
             ];
             lista.sort((a,b)=>{const pA=a.name.split(','),pB=b.name.split(',');return(pA[0]||'').trim().localeCompare((pB[0]||'').trim(),'es')||(pA[1]||'').trim().localeCompare((pB[1]||'').trim(),'es');});
             lista.forEach((s,i)=>sharedStudents['11D'].push({id:'p11d_'+(i+1),name:s.name,cedula:s.cedula,number:i+1}));
