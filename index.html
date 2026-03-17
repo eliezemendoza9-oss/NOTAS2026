@@ -2643,10 +2643,11 @@
 
             const payload = {
                 writeKey: 'MEDUCA2026BOCA',
-                manualSave: true,  // indica que es guardado manual con estudiantes
+                manualSave: true,
                 students:   studentsData   ? JSON.parse(studentsData)   : {},
                 attendance: attendanceData ? JSON.parse(attendanceData) : {},
                 grades:     gradesData     ? JSON.parse(gradesData)     : {},
+                trimester:  typeof trimesterAsistencia !== 'undefined' ? trimesterAsistencia : 1,
                 syncDate:   new Date().toISOString()
             };
 
