@@ -944,7 +944,7 @@
     <!-- BARRA DE SINCRONIZACIÓN -->
     <div id="syncBar">
         <span id="syncText">⏳ Iniciando...</span>
-        <button onclick="guardarNube()" style="background:#2e7d32;color:white;border:none;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:12px;font-weight:600;">💾 Guardar Nube</button>
+        <button onclick="verificarYGuardar()" style="background:#2e7d32;color:white;border:none;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:12px;font-weight:600;">💾 Guardar Nube</button>
         <button onclick="loadFromCloud()" style="background:#1565c0;color:white;border:none;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:12px;font-weight:600;">☁️ Cargar Nube</button>
         <button onclick="resetTodoElSistema()" style="background:#7f1d1d;color:white;border:none;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:12px;font-weight:600;">🗑️ Borrar Todo</button>
     </div>
@@ -2631,6 +2631,48 @@
         // syncManual eliminado — usar boton Guardar Nube
 
         // ==================== CARGAR DESDE NUBE ====================
+        // PIN almacenado en localStorage de este dispositivo
+        function tienePinValido() {
+            return localStorage.getItem('pinVerificado') === '19942026_ok';
+        }
+
+        function verificarYGuardar() {
+            if (tienePinValido()) {
+                guardarNube();
+                return;
+            }
+            // Pedir PIN
+            const pin = window.prompt('Ingrese el PIN para guardar datos:');
+            if (!pin) return;
+
+            const bar = document.getElementById('syncText');
+            bar.textContent = '🔐 Verificando PIN...';
+
+            // Verificar PIN contra Google Sheets
+            window._pinCallback = function(data) {
+                if (data && data.success && data.valid) {
+                    localStorage.setItem('pinVerificado', '19942026_ok');
+                    bar.textContent = '✅ PIN correcto. Guardando...';
+                    setTimeout(() => guardarNube(), 500);
+                } else {
+                    bar.textContent = '❌ PIN incorrecto.';
+                    setTimeout(updateSyncBar, 2000);
+                }
+                var old = document.getElementById('_pinScript');
+                if (old) old.remove();
+            };
+
+            var script = document.createElement('script');
+            script.id = '_pinScript';
+            script.src = APPS_SCRIPT_URL + '?action=verifyPin&pin=' + encodeURIComponent(pin) + '&callback=_pinCallback&t=' + Date.now();
+            script.onerror = function() {
+                bar.textContent = '⚠️ Error verificando PIN.';
+                setTimeout(updateSyncBar, 2000);
+                this.remove();
+            };
+            document.head.appendChild(script);
+        }
+
         async function guardarNube() {
             if (!navigator.onLine) { alert('Sin internet. Conecte el Starlink e intente de nuevo.'); return; }
             const bar = document.getElementById('syncText');
