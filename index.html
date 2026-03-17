@@ -177,36 +177,73 @@
         #syncBar button:hover { background: rgba(255,255,255,0.35); }
 
         /* ====== PESTAÑAS ====== */
-        .tabs-container {
-            background: var(--white);
-            box-shadow: var(--shadow);
+        /* ====== LAYOUT PRINCIPAL CON SIDEBAR ====== */
+        .app-layout {
+            display: flex;
+            min-height: calc(100vh - 40px);
         }
+        /* Sidebar */
+        .sidebar {
+            width: 200px;
+            min-width: 200px;
+            background: var(--primary);
+            display: flex;
+            flex-direction: column;
+            transition: width 0.25s ease, min-width 0.25s ease;
+            position: relative;
+            z-index: 10;
+        }
+        .sidebar.collapsed {
+            width: 42px;
+            min-width: 42px;
+        }
+        .sidebar-toggle {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: white;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            text-align: center;
+            width: 100%;
+            font-weight: 700;
+        }
+        .sidebar-toggle:hover { background: rgba(255,255,255,0.25); }
         .tabs {
             display: flex;
-            background: #e2e8f0;
-            border-bottom: 2px solid var(--primary);
+            flex-direction: column;
+            padding: 4px 0;
         }
         .tab {
-            flex: 1;
-            padding: 10px 16px;
-            text-align: center;
+            padding: 11px 14px;
+            text-align: left;
             cursor: pointer;
             font-weight: 600;
-            font-size: 13px;
-            color: var(--text-muted);
+            font-size: 12px;
+            color: rgba(255,255,255,0.8);
             transition: all 0.2s;
             border: none;
             background: transparent;
+            white-space: nowrap;
+            overflow: hidden;
         }
-        .tab:hover { background: var(--primary-light); color: var(--primary); }
+        .tab:hover { background: rgba(255,255,255,0.15); color: white; }
         .tab.active {
-            background: var(--white);
-            color: var(--primary);
-            border-bottom: 3px solid var(--primary);
-            margin-bottom: -2px;
+            background: rgba(255,255,255,0.25);
+            color: white;
+            border-left: 4px solid white;
+        }
+        .sidebar.collapsed .tab { padding: 11px 10px; font-size: 16px; }
+        .sidebar.collapsed .tab-label { display: none; }
+        /* Contenido principal */
+        .main-content {
+            flex: 1;
+            overflow: auto;
+            min-width: 0;
         }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
+        .tabs-container { display: flex; flex: 1; }
 
         /* ====== BARRA DE HERRAMIENTAS COLAPSABLE ====== */
         .toolbar {
@@ -953,15 +990,24 @@
         <!-- Mensaje guardado -->
         <div class="saved-msg" id="savedMsg">✓ Guardado</div>
 
-        <!-- Pestañas -->
-        <div class="tabs-container">
+        <!-- Layout con sidebar -->
+        <div class="app-layout">
+        <!-- Sidebar izquierdo colapsable -->
+        <div class="sidebar" id="sidebar">
+            <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
             <div class="tabs">
-                <button class="tab active" onclick="switchTab('notas')">📝 NOTAS</button>
-                <button class="tab" onclick="switchTab('asistencia')">✅ ASISTENCIA</button>
-                <button class="tab" onclick="switchTab('copias')">📋 COPIAS</button>
-                <button class="tab" onclick="switchTab('talleres')">📚 TALLERES</button>
-                <button class="tab" onclick="switchTab('rubrica')">⭐ RÚBRICA</button>
+                <button class="tab active" onclick="switchTab('notas', this)">📝 <span class="tab-label">NOTAS</span></button>
+                <button class="tab" onclick="switchTab('asistencia', this)">✅ <span class="tab-label">ASISTENCIA</span></button>
+                <button class="tab" onclick="switchTab('copias', this)">📋 <span class="tab-label">COPIAS</span></button>
+                <button class="tab" onclick="switchTab('talleres', this)">📚 <span class="tab-label">TALLERES</span></button>
+                <button class="tab" onclick="switchTab('rubrica', this)">⭐ <span class="tab-label">RÚBRICA</span></button>
+                <button class="tab" onclick="switchTab('participacion', this)">🎤 <span class="tab-label">PARTICIPACIÓN</span></button>
+                <button class="tab" onclick="switchTab('buscar', this)">🔍 <span class="tab-label">BUSCAR</span></button>
             </div>
+        </div>
+        <!-- Contenido principal -->
+        <div class="main-content">
+        <div class="tabs-container">
 
             <!-- ==================== CONTENIDO NOTAS ==================== -->
             <div id="notas" class="tab-content active">
@@ -1359,6 +1405,85 @@
             </div>
         </div>
 
+            <!-- ==================== PARTICIPACION ==================== -->
+            <div id="participacion" class="tab-content">
+                <div style="padding:16px;">
+                    <h3 style="color:var(--primary);margin-bottom:16px;">🎤 PARTICIPACIÓN DE ESTUDIANTES</h3>
+                    <!-- Filtros -->
+                    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;align-items:flex-end;">
+                        <div>
+                            <label style="font-size:11px;font-weight:600;display:block;margin-bottom:3px;">Grupo:</label>
+                            <select id="partGrupo" onchange="renderParticipacion()" style="padding:5px 8px;border:1px solid #ccc;border-radius:4px;">
+                                <option value="12A">12° A</option>
+                                <option value="12B">12° B</option>
+                                <option value="12C">12° C</option>
+                                <option value="12D">12° D</option>
+                                <option value="11D">11° D</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="font-size:11px;font-weight:600;display:block;margin-bottom:3px;">Filtrar por Skill:</label>
+                            <select id="partSkillFiltro" onchange="renderParticipacion()" style="padding:5px 8px;border:1px solid #ccc;border-radius:4px;">
+                                <option value="">Todos</option>
+                                <option value="Reading">Reading</option>
+                                <option value="Writing">Writing</option>
+                                <option value="Speaking">Speaking</option>
+                                <option value="Listening">Listening</option>
+                                <option value="Mediation">Mediation</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" onclick="abrirFormParticipacion()" style="height:32px;">➕ Registrar Actividad</button>
+                    </div>
+                    <!-- Formulario nueva actividad -->
+                    <div id="formParticipacion" style="display:none;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:14px;margin-bottom:14px;">
+                        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:10px;">
+                            <div>
+                                <label style="font-size:11px;font-weight:600;display:block;margin-bottom:3px;">Fecha:</label>
+                                <input type="date" id="partFecha" style="padding:5px 8px;border:1px solid #ccc;border-radius:4px;">
+                            </div>
+                            <div>
+                                <label style="font-size:11px;font-weight:600;display:block;margin-bottom:3px;">Actividad:</label>
+                                <input type="text" id="partActividad" placeholder="Ej: Class discussion" style="padding:5px 8px;border:1px solid #ccc;border-radius:4px;width:200px;">
+                            </div>
+                            <div>
+                                <label style="font-size:11px;font-weight:600;display:block;margin-bottom:3px;">Skill:</label>
+                                <select id="partSkill" style="padding:5px 8px;border:1px solid #ccc;border-radius:4px;">
+                                    <option value="Speaking">Speaking</option>
+                                    <option value="Reading">Reading</option>
+                                    <option value="Writing">Writing</option>
+                                    <option value="Listening">Listening</option>
+                                    <option value="Mediation">Mediation</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-success" onclick="guardarActividad()" style="height:32px;">✔ Guardar</button>
+                            <button class="btn" style="background:#64748b;color:white;height:32px;" onclick="document.getElementById('formParticipacion').style.display='none'">✕</button>
+                        </div>
+                        <!-- Lista de estudiantes para marcar participacion -->
+                        <div id="partEstudiantesForm" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+                    </div>
+                    <!-- Tabla de participacion acumulada -->
+                    <div id="partTabla"></div>
+                </div>
+            </div>
+
+            <!-- ==================== BUSCAR ==================== -->
+            <div id="buscar" class="tab-content">
+                <div style="padding:16px;">
+                    <h3 style="color:var(--primary);margin-bottom:16px;">🔍 BUSCAR ESTUDIANTE</h3>
+                    <div style="display:flex;gap:10px;margin-bottom:16px;align-items:center;">
+                        <input type="text" id="buscarInput" placeholder="Nombre o cédula..." 
+                            style="padding:8px 12px;border:1px solid #ccc;border-radius:6px;width:300px;font-size:14px;"
+                            oninput="buscarEstudiante()">
+                        <button class="btn btn-primary" onclick="buscarEstudiante()">🔍 Buscar</button>
+                    </div>
+                    <div id="buscarResultado"></div>
+                </div>
+            </div>
+
+        </div><!-- fin tabs-container -->
+        </div><!-- fin main-content -->
+        </div><!-- fin app-layout -->
+
         <div class="modal" id="addModalNotas">
             <div class="modal-content">
                 <h3>Agregar Estudiante (Notas)</h3>
@@ -1441,16 +1566,22 @@
             el.nextElementSibling.classList.toggle('open');
         }
 
-        function switchTab(tabName) {
+        function switchTab(tabName, btn) {
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
-            if      (tabName==='notas')      renderNotas();
-            else if (tabName==='asistencia') renderAsistencia();
-            else if (tabName==='copias')     renderCopias();
-            else if (tabName==='talleres')   renderTalleres();
-            else if (tabName==='rubrica')    renderRubrica();
+            if (btn) btn.classList.add('active');
+            if      (tabName==='notas')          renderNotas();
+            else if (tabName==='asistencia')     renderAsistencia();
+            else if (tabName==='copias')         renderCopias();
+            else if (tabName==='talleres')       renderTalleres();
+            else if (tabName==='rubrica')        renderRubrica();
+            else if (tabName==='participacion')  renderParticipacion();
+            else if (tabName==='buscar')         { document.getElementById('buscarInput').focus(); }
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('collapsed');
         }
 
         // ==================== CÓDIGO NOTAS ====================
@@ -2683,14 +2814,16 @@
             const attendanceData = localStorage.getItem('attendance');
             const gradesData = localStorage.getItem('notas_grades');
 
+            const partData = localStorage.getItem('participacion_data');
             const payload = {
                 writeKey: 'MEDUCA2026BOCA',
                 manualSave: true,
-                students:   studentsData   ? JSON.parse(studentsData)   : {},
-                attendance: attendanceData ? JSON.parse(attendanceData) : {},
-                grades:     gradesData     ? JSON.parse(gradesData)     : {},
-                trimester:  typeof trimesterAsistencia !== 'undefined' ? trimesterAsistencia : 1,
-                syncDate:   new Date().toISOString()
+                students:      studentsData ? JSON.parse(studentsData) : {},
+                attendance:    attendanceData ? JSON.parse(attendanceData) : {},
+                grades:        gradesData ? JSON.parse(gradesData) : {},
+                participacion: partData ? JSON.parse(partData) : {},
+                trimester:     typeof trimesterAsistencia !== 'undefined' ? trimesterAsistencia : 1,
+                syncDate:      new Date().toISOString()
             };
 
             try {
@@ -2726,12 +2859,13 @@
                     if (teacher) localStorage.setItem('teacherName', teacher);
 
                     // Cargar exactamente lo que está en Sheets
-                    localStorage.setItem('shared_students', JSON.stringify(data.students || {}));
-                    localStorage.setItem('notas_grades',    JSON.stringify(data.grades    || {}));
-                    localStorage.setItem('attendance',      JSON.stringify(data.attendance|| {}));
-                    localStorage.setItem('copias_data',     JSON.stringify(data.copias    || {}));
-                    localStorage.setItem('talleres_data',   JSON.stringify(data.talleres  || {}));
-                    localStorage.setItem('rubrica_data',    JSON.stringify(data.rubrica   || {}));
+                    localStorage.setItem('shared_students',    JSON.stringify(data.students      || {}));
+                    localStorage.setItem('notas_grades',       JSON.stringify(data.grades        || {}));
+                    localStorage.setItem('attendance',         JSON.stringify(data.attendance    || {}));
+                    localStorage.setItem('copias_data',        JSON.stringify(data.copias        || {}));
+                    localStorage.setItem('talleres_data',      JSON.stringify(data.talleres      || {}));
+                    localStorage.setItem('rubrica_data',       JSON.stringify(data.rubrica       || {}));
+                    localStorage.setItem('participacion_data', JSON.stringify(data.participacion || {}));
                     localStorage.setItem('syncPending', '');
 
                     bar.textContent = '✅ Datos cargados desde Google Sheets. Recargando...';
@@ -2932,6 +3066,328 @@
             bar.textContent = '✅ Todo borrado. Recargando...';
             setTimeout(() => location.reload(), 1500);
         }
+
+        // ==================== PARTICIPACION ====================
+        let participacionData = {};
+
+        function loadParticipacion() {
+            const s = localStorage.getItem('participacion_data');
+            if (s) participacionData = JSON.parse(s);
+        }
+
+        function saveParticipacion() {
+            localStorage.setItem('participacion_data', JSON.stringify(participacionData));
+        }
+
+        function abrirFormParticipacion() {
+            const form = document.getElementById('formParticipacion');
+            form.style.display = 'block';
+            document.getElementById('partFecha').value = new Date().toISOString().split('T')[0];
+            document.getElementById('partActividad').value = '';
+            renderEstudiantesForm();
+        }
+
+        function renderEstudiantesForm() {
+            const grupo = document.getElementById('partGrupo').value;
+            const lista = sharedStudents[grupo] || [];
+            const cont = document.getElementById('partEstudiantesForm');
+            cont.innerHTML = lista.map(s => `
+                <label style="display:flex;align-items:center;gap:5px;background:white;border:1px solid #e2e8f0;
+                    border-radius:6px;padding:6px 10px;cursor:pointer;font-size:12px;font-weight:600;">
+                    <input type="checkbox" value="${s.id}" style="width:16px;height:16px;cursor:pointer;">
+                    ${s.name}
+                </label>`).join('');
+        }
+
+        function guardarActividad() {
+            const grupo = document.getElementById('partGrupo').value;
+            const fecha = document.getElementById('partFecha').value;
+            const actividad = document.getElementById('partActividad').value.trim();
+            const skill = document.getElementById('partSkill').value;
+            if (!fecha || !actividad) { alert('Complete fecha y actividad'); return; }
+
+            const checks = document.querySelectorAll('#partEstudiantesForm input[type=checkbox]:checked');
+            if (checks.length === 0) { alert('Marque al menos un estudiante'); return; }
+
+            if (!participacionData[grupo]) participacionData[grupo] = [];
+            checks.forEach(cb => {
+                participacionData[grupo].push({
+                    id: cb.value,
+                    fecha, actividad, skill,
+                    ts: Date.now()
+                });
+            });
+
+            saveParticipacion();
+            document.getElementById('formParticipacion').style.display = 'none';
+            renderParticipacion();
+        }
+
+        function renderParticipacion() {
+            const grupo = document.getElementById('partGrupo').value;
+            const skillFiltro = document.getElementById('partSkillFiltro').value;
+            const lista = sharedStudents[grupo] || [];
+            const registros = (participacionData[grupo] || [])
+                .filter(r => !skillFiltro || r.skill === skillFiltro);
+
+            // Acumular por estudiante
+            const acum = {};
+            lista.forEach(s => acum[s.id] = {name: s.name, total: 0, skills: {}});
+            registros.forEach(r => {
+                if (!acum[r.id]) acum[r.id] = {name: r.id, total: 0, skills: {}};
+                acum[r.id].total++;
+                acum[r.id].skills[r.skill] = (acum[r.id].skills[r.skill] || 0) + 1;
+            });
+
+            const skills = ['Speaking','Reading','Writing','Listening','Mediation'];
+            const cont = document.getElementById('partTabla');
+
+            if (lista.length === 0) {
+                cont.innerHTML = '<p style="color:#888;padding:20px;">No hay estudiantes en este grupo.</p>';
+                return;
+            }
+
+            cont.innerHTML = `
+            <table style="width:100%;border-collapse:collapse;font-size:12px;">
+                <thead>
+                    <tr style="background:var(--primary);color:white;">
+                        <th style="padding:8px;text-align:left;">N°</th>
+                        <th style="padding:8px;text-align:left;">ESTUDIANTE</th>
+                        ${skills.map(sk => `<th style="padding:8px;text-align:center;">${sk}</th>`).join('')}
+                        <th style="padding:8px;text-align:center;background:#e65100;">TOTAL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${lista.map((s,i) => {
+                        const d = acum[s.id] || {total:0,skills:{}};
+                        return `<tr style="border-bottom:1px solid #e2e8f0;${i%2===0?'background:#f8fafc':''}">
+                            <td style="padding:7px 8px;">${i+1}</td>
+                            <td style="padding:7px 8px;font-weight:600;">${s.name}</td>
+                            ${skills.map(sk => `<td style="padding:7px 8px;text-align:center;">
+                                ${d.skills[sk] ? `<span style="background:#dcfce7;color:#166534;border-radius:10px;padding:2px 8px;font-weight:700;">${d.skills[sk]}</span>` : '—'}
+                            </td>`).join('')}
+                            <td style="padding:7px 8px;text-align:center;font-weight:700;color:var(--primary);">${d.total}</td>
+                        </tr>`;
+                    }).join('')}
+                </tbody>
+            </table>`;
+
+            renderEstudiantesForm();
+        }
+
+        // ==================== BUSCAR ESTUDIANTE ====================
+        function buscarEstudiante() {
+            const query = document.getElementById('buscarInput').value.trim().toUpperCase();
+            const cont = document.getElementById('buscarResultado');
+            if (!query || query.length < 2) { cont.innerHTML = ''; return; }
+
+            const grupos = ['12A','12B','12C','12D','11D'];
+            let encontrados = [];
+            grupos.forEach(grupo => {
+                (sharedStudents[grupo] || []).forEach(s => {
+                    if (s.name.includes(query) || (s.cedula && s.cedula.includes(query))) {
+                        encontrados.push({...s, grupo});
+                    }
+                });
+            });
+
+            if (encontrados.length === 0) {
+                cont.innerHTML = `<div style="text-align:center;padding:40px;color:#94a3b8;">
+                    <div style="font-size:40px;margin-bottom:10px;">🔍</div>
+                    <div style="font-size:14px;font-weight:600;">No se encontró ningún estudiante</div>
+                </div>`;
+                return;
+            }
+
+            cont.innerHTML = encontrados.map(s => {
+                // NOTAS
+                const notasKeys = Object.keys(grades).filter(k => k.includes(s.id));
+                const notasCards = notasKeys.length > 0 ? notasKeys.map(k => {
+                    const g = grades[k];
+                    const nota = parseFloat(g.notaFinal) || 0;
+                    const color = nota >= 4 ? '#16a34a' : nota >= 3 ? '#d97706' : '#dc2626';
+                    const bg = nota >= 4 ? '#dcfce7' : nota >= 3 ? '#fef3c7' : '#fee2e2';
+                    const trim = k.split('-T')[1]?.split('-')[0] || '';
+                    const actFields = ['p1','p2','p3','p4','p5','p6'].filter(f=>g[f]);
+                    const aprFields = ['a1','a2','a3','a4','a5','a6'].filter(f=>g[f]);
+                    return `<div style="background:${bg};border-radius:10px;padding:10px 14px;min-width:140px;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                            <span style="font-size:10px;color:#666;font-weight:700;">TRIMESTRE ${trim}</span>
+                            <span style="font-size:18px;font-weight:800;color:${color};">${g.notaFinal||'—'}</span>
+                        </div>
+                        ${actFields.length>0?`<div style="font-size:9px;color:#555;margin-bottom:2px;">Actividades: ${actFields.map(f=>g[f]).join(' · ')}</div>`:''}
+                        ${aprFields.length>0?`<div style="font-size:9px;color:#555;margin-bottom:2px;">Apreciación: ${aprFields.map(f=>g[f]).join(' · ')}</div>`:''}
+                        ${g.examen?`<div style="font-size:9px;color:#555;">Examen: ${g.examen}</div>`:''}
+                        <div style="font-size:9px;font-weight:700;color:${color};margin-top:4px;">${nota>=3?'✓ APROBADO':'✗ REPROBADO'}</div>
+                    </div>`;
+                }).join('') : `<div style="color:#94a3b8;font-size:12px;padding:10px;">Sin notas registradas</div>`;
+
+                // ASISTENCIA
+                const att = attendance[s.grupo] || {};
+                let presentes=0, ausentes=0, tardanzas=0, excusas=0, total=0;
+                const attDetalle = [];
+                Object.keys(att).sort().forEach(fecha => {
+                    const e = att[fecha][s.id];
+                    if (e) {
+                        total++;
+                        if(e==='present') presentes++;
+                        else if(e==='absent') ausentes++;
+                        else if(e==='late') tardanzas++;
+                        else if(e==='excuse') excusas++;
+                        const icon = e==='present'?'✓':e==='absent'?'✗':e==='late'?'T':'E';
+                        const bg = e==='present'?'#dcfce7':e==='absent'?'#fee2e2':e==='late'?'#fef3c7':'#e0f2fe';
+                        const col = e==='present'?'#166534':e==='absent'?'#dc2626':e==='late'?'#92400e':'#0369a1';
+                        const [y,m,d] = fecha.split('-');
+                        attDetalle.push(`<div style="background:${bg};border-radius:6px;padding:4px 8px;text-align:center;min-width:52px;">
+                            <div style="font-size:10px;font-weight:700;color:${col};">${icon}</div>
+                            <div style="font-size:9px;color:#666;">${d}/${m}</div>
+                        </div>`);
+                    }
+                });
+                const pct = total > 0 ? Math.round((presentes/total)*100) : 0;
+                const pctColor = pct>=90?'#16a34a':pct>=75?'#d97706':'#dc2626';
+                const attBlock = total > 0 ? `
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px;">
+                        <div style="background:#f0fdf4;border-radius:10px;padding:8px 12px;text-align:center;">
+                            <div style="font-size:20px;font-weight:800;color:${pctColor};">${pct}%</div>
+                            <div style="font-size:9px;color:#666;">ASISTENCIA</div>
+                        </div>
+                        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                            <span style="background:#dcfce7;color:#166534;border-radius:6px;padding:4px 8px;font-size:11px;font-weight:600;">✓ ${presentes}</span>
+                            <span style="background:#fee2e2;color:#dc2626;border-radius:6px;padding:4px 8px;font-size:11px;font-weight:600;">✗ ${ausentes}</span>
+                            <span style="background:#fef3c7;color:#92400e;border-radius:6px;padding:4px 8px;font-size:11px;font-weight:600;">T ${tardanzas}</span>
+                            <span style="background:#e0f2fe;color:#0369a1;border-radius:6px;padding:4px 8px;font-size:11px;font-weight:600;">E ${excusas}</span>
+                        </div>
+                    </div>
+                    <div style="display:flex;flex-wrap:wrap;gap:4px;">${attDetalle.join('')}</div>`
+                : `<div style="color:#94a3b8;font-size:12px;">Sin registros de asistencia</div>`;
+
+                // PARTICIPACION
+                const parts = (participacionData[s.grupo] || []).filter(r => r.id === s.id)
+                    .sort((a,b) => a.fecha > b.fecha ? -1 : 1);
+                const skillCount = {};
+                parts.forEach(p => skillCount[p.skill] = (skillCount[p.skill]||0)+1);
+                const skillColors = {Speaking:'#b45309',Reading:'#0369a1',Writing:'#166534',Listening:'#7c3aed',Mediation:'#be185d'};
+                const skillBg = {Speaking:'#fef3c7',Reading:'#e0f2fe',Writing:'#dcfce7',Listening:'#ede9fe',Mediation:'#fce7f3'};
+                const partBlock = parts.length > 0 ? `
+                    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
+                        <div style="background:#fef3c7;border-radius:10px;padding:8px 12px;text-align:center;">
+                            <div style="font-size:20px;font-weight:800;color:#92400e;">${parts.length}</div>
+                            <div style="font-size:9px;color:#666;">TOTAL</div>
+                        </div>
+                        ${Object.keys(skillCount).map(sk=>`
+                        <div style="background:${skillBg[sk]||'#f1f5f9'};border-radius:8px;padding:6px 10px;text-align:center;">
+                            <div style="font-size:14px;font-weight:800;color:${skillColors[sk]||'#333'};">${skillCount[sk]}</div>
+                            <div style="font-size:9px;color:#666;">${sk}</div>
+                        </div>`).join('')}
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:4px;">
+                        ${parts.map(p => {
+                            const [y,m,d] = (p.fecha||'').split('-');
+                            return `<div style="display:flex;align-items:center;gap:8px;background:#fffbeb;border-radius:6px;padding:5px 10px;">
+                                <span style="font-size:10px;color:#666;white-space:nowrap;">${d||''}/${m||''}/${y||''}</span>
+                                <span style="background:${skillBg[p.skill]||'#f1f5f9'};color:${skillColors[p.skill]||'#333'};border-radius:4px;padding:1px 7px;font-size:10px;font-weight:700;">${p.skill}</span>
+                                <span style="font-size:11px;color:#374151;flex:1;">${p.actividad}</span>
+                            </div>`;
+                        }).join('')}
+                    </div>` : `<div style="color:#94a3b8;font-size:12px;">Sin participaciones registradas</div>`;
+
+                // TALLERES
+                const talleresGrupo = talleresData[s.grupo] || {};
+                const tallerItems = [];
+                Object.values(talleresGrupo).forEach(t => {
+                    if (t.notas && t.notas[s.id] !== undefined)
+                        tallerItems.push({nombre: t.nombre||'Taller', nota: t.notas[s.id]});
+                });
+                const tallerBlock = tallerItems.length > 0 ? `
+                    <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                        ${tallerItems.map(t => {
+                            const n = parseFloat(t.nota)||0;
+                            const c = n>=4?'#16a34a':n>=3?'#d97706':'#dc2626';
+                            const bg = n>=4?'#dcfce7':n>=3?'#fef3c7':'#fee2e2';
+                            return `<div style="background:${bg};border-radius:8px;padding:7px 12px;text-align:center;">
+                                <div style="font-size:16px;font-weight:800;color:${c};">${t.nota}</div>
+                                <div style="font-size:9px;color:#666;max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${t.nombre}</div>
+                            </div>`;
+                        }).join('')}
+                    </div>` : `<div style="color:#94a3b8;font-size:12px;">Sin talleres registrados</div>`;
+
+                // RUBRICA
+                const rubricaGrupo = rubricaData[s.grupo] || {};
+                const rubricaItems = [];
+                Object.values(rubricaGrupo).forEach(trim => {
+                    Object.values(trim).forEach(c => {
+                        if (c.notas && c.notas[s.id] !== undefined)
+                            rubricaItems.push({nombre: c.nombre||'Criterio', nota: c.notas[s.id], max: c.max||10});
+                    });
+                });
+                const rubricaBlock = rubricaItems.length > 0 ? `
+                    <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                        ${rubricaItems.map(r => {
+                            const pct = Math.min(100, Math.round((parseFloat(r.nota)||0)/(parseFloat(r.max)||10)*100));
+                            const c = pct>=70?'#7c3aed':'#a78bfa';
+                            return `<div style="background:#f5f3ff;border-radius:8px;padding:7px 12px;text-align:center;min-width:70px;">
+                                <div style="font-size:16px;font-weight:800;color:${c};">${r.nota}<span style="font-size:9px;">/${r.max}</span></div>
+                                <div style="font-size:9px;color:#666;max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${r.nombre}</div>
+                            </div>`;
+                        }).join('')}
+                    </div>` : `<div style="color:#94a3b8;font-size:12px;">Sin rúbrica registrada</div>`;
+
+                return `
+                <div style="background:white;border-radius:14px;overflow:hidden;margin-bottom:16px;box-shadow:0 2px 12px rgba(0,0,0,0.1);">
+                    <!-- Cabecera del estudiante -->
+                    <div style="background:linear-gradient(135deg,var(--primary),#1e3a5f);padding:16px 20px;display:flex;align-items:center;gap:14px;">
+                        <div style="background:rgba(255,255,255,0.2);border-radius:50%;width:50px;height:50px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:white;">
+                            ${s.name.charAt(0)}
+                        </div>
+                        <div>
+                            <div style="font-size:16px;font-weight:800;color:white;">${s.name}</div>
+                            <div style="font-size:11px;color:rgba(255,255,255,0.7);margin-top:2px;">
+                                Grupo ${s.grupo} &nbsp;|&nbsp; Cédula: ${s.cedula||'—'} &nbsp;|&nbsp; #${s.number||'—'}
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Secciones -->
+                    <div style="padding:14px 16px;display:flex;flex-direction:column;gap:14px;">
+                        <!-- Notas -->
+                        <div>
+                            <div style="font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;display:flex;align-items:center;gap:6px;">
+                                <span style="background:#e0f2fe;color:#0369a1;border-radius:4px;padding:2px 6px;">📊 NOTAS FINALES</span>
+                            </div>
+                            <div style="display:flex;gap:8px;flex-wrap:wrap;">${notasCards}</div>
+                        </div>
+                        <!-- Asistencia -->
+                        <div style="border-top:1px solid #f1f5f9;padding-top:12px;">
+                            <div style="font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">
+                                <span style="background:#dcfce7;color:#166534;border-radius:4px;padding:2px 6px;">✅ ASISTENCIA</span>
+                            </div>
+                            ${attBlock}
+                        </div>
+                        <!-- Participacion -->
+                        <div style="border-top:1px solid #f1f5f9;padding-top:12px;">
+                            <div style="font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">
+                                <span style="background:#fef3c7;color:#92400e;border-radius:4px;padding:2px 6px;">🎤 PARTICIPACIÓN</span>
+                            </div>
+                            ${partBlock}
+                        </div>
+                        <!-- Talleres -->
+                        <div style="border-top:1px solid #f1f5f9;padding-top:12px;">
+                            <div style="font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">
+                                <span style="background:#ede9fe;color:#5b21b6;border-radius:4px;padding:2px 6px;">📚 TALLERES</span>
+                            </div>
+                            ${tallerBlock}
+                        </div>
+                        <!-- Rubrica -->
+                        <div style="border-top:1px solid #f1f5f9;padding-top:12px;">
+                            <div style="font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">
+                                <span style="background:#f5f3ff;color:#5b21b6;border-radius:4px;padding:2px 6px;">⭐ RÚBRICA</span>
+                            </div>
+                            ${rubricaBlock}
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
         // ==================== COPIAS ====================
         let copiasData = {};
         function loadCopias(){const s=localStorage.getItem('copias_data');if(s)copiasData=JSON.parse(s);}
@@ -3110,6 +3566,7 @@
             preloadStudents12C();
             preloadStudents12D();
             preloadStudents11D();
+            loadParticipacion();
             loadCopias();
             loadTalleres();
             loadRubrica();
