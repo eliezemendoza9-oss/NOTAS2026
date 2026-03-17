@@ -2719,26 +2719,26 @@
 
         // ==================== PRECARGAR GRUPOS ====================
         function preloadStudents12A() {
-            const key = 'preloaded_12A_v2';
+            const key = 'preloaded_12A_v3';
             if (localStorage.getItem(key)) return;
             sharedStudents['12A'] = [];
             const lista = [
-                { name: 'BEJERANO AMADOR, FRANCISCO',    cedula: '12-705-1888' },
-                { name: 'BEJERANO VEJERANO, MIRIAN',     cedula: '12-725-962'  },
-                { name: 'BLANCO SAMUDIO, AGRIPINA',      cedula: '12-719-509'  },
-                { name: 'CUEVA, AURILUX',                cedula: ''            },
-                { name: 'GALLEGO BEJERANO, RAQUEL',      cedula: '12-725-1624' },
-                { name: 'MIRANDA SAMUDIO, ALCIBIADES',   cedula: '12-728-2459' },
-                { name: 'MIRANDA SAMUDIO, MILANETH',     cedula: '12-719-1162' },
-                { name: 'MONTEZUMA MONTEZUMA, NAPOLEON', cedula: '4-849-779'   },
-                { name: 'PALACIO BEJERANO, PEDRO',       cedula: '12-730-2349' },
-                { name: 'PALACIO ORTIZ, ROLANDO',        cedula: '4-844-769'   },
-                { name: 'PALACIO SAMUDIO, ADOLFO',       cedula: '12-710-352'  },
-                { name: 'PALACIOS BEJERANO, IRISNEL',    cedula: '12-713-1479' },
-                { name: 'RIOS BEJERANO, EFRAIN',         cedula: '12-729-438'  },
-                { name: 'SAMUDIO CHAVEZ, DAIRA',         cedula: '4-848-100'   },
-                { name: 'SAMUDIO PALACIO, JENNI',        cedula: '12-730-1125' },
-                { name: 'SANTOS PALACIO, SAUL',          cedula: '12-724-292'  },
+                { name: 'BEJERANO, FRANCISCO',  cedula: '12-705-1888' },
+                { name: 'BEJERANO, MIRIAN',     cedula: '12-725-962'  },
+                { name: 'BLANCO, AGRIPINA',     cedula: '12-719-509'  },
+                { name: 'CUEVA, AURILUX',       cedula: ''            },
+                { name: 'GALLEGO, RAQUEL',      cedula: '12-725-1624' },
+                { name: 'MIRANDA, ALCIBIADES',  cedula: '12-728-2459' },
+                { name: 'MIRANDA, MILANETH',    cedula: '12-719-1162' },
+                { name: 'MONTEZUMA, NAPOLEON',  cedula: '4-849-779'   },
+                { name: 'PALACIO, PEDRO',       cedula: '12-730-2349' },
+                { name: 'PALACIO, ROLANDO',     cedula: '4-844-769'   },
+                { name: 'PALACIO, ADOLFO',      cedula: '12-710-352'  },
+                { name: 'PALACIOS, IRISNEL',    cedula: '12-713-1479' },
+                { name: 'RIOS, EFRAIN',         cedula: '12-729-438'  },
+                { name: 'SAMUDIO, DAIRA',       cedula: '4-848-100'   },
+                { name: 'SAMUDIO, JENNI',       cedula: '12-730-1125' },
+                { name: 'SANTOS, SAUL',         cedula: '12-724-292'  },
             ];
             lista.sort((a,b)=>{const pA=a.name.split(','),pB=b.name.split(',');return(pA[0]||'').trim().localeCompare((pB[0]||'').trim(),'es')||(pA[1]||'').trim().localeCompare((pB[1]||'').trim(),'es');});
             lista.forEach((s,i)=>sharedStudents['12A'].push({id:'p12a_'+(i+1),name:s.name,cedula:s.cedula,number:i+1}));
