@@ -1,4 +1,4 @@
-const CACHE = 'meduca-2026-v8';
+const CACHE = 'meduca-2026-v9';
 
 // Al instalar: guardar el index.html en caché
 self.addEventListener('install', e => {
