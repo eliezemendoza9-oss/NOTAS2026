@@ -27,8 +27,7 @@
         function markPendingSync() {
             syncPending = true;
             localStorage.setItem('syncPending', 'true');
-            updateSyncBar();
-            // NO sincronizar automaticamente — el usuario decide cuando subir
+            updateSyncBar(); // Solo actualizar la barra, NUNCA sincronizar solo
         }
 
         // Actualizar la barra de estado de sync
@@ -103,7 +102,7 @@
         window.addEventListener('online', function() {
             console.log('Internet detectado - iniciando sync...');
             updateSyncBar();
-            // Sin sync automatico al detectar internet
+            // Sin sync automatico
         });
 
         window.addEventListener('offline', function() {
@@ -2629,15 +2628,7 @@
             '11D': 'JOSÉ LUIS CHÁVEZ'
         };
 
-        // ==================== SYNC MANUAL ====================
-        async function syncManual() {
-            if (syncInProgress) { alert('Sincronización en progreso...'); return; }
-            if (!navigator.onLine) { alert('Sin internet. Conecte el Starlink e intente de nuevo.'); return; }
-            localStorage.setItem('syncPending','true');
-            syncPending = true;
-            updateSyncBar();
-            await syncWithGoogleSheets();
-        }
+        // syncManual eliminado — usar boton Guardar Nube
 
         // ==================== CARGAR DESDE NUBE ====================
         async function guardarNube() {
@@ -3085,8 +3076,7 @@
             updateSyncBar();
 
             // Si hay internet y hay pendientes, sincronizar al cargar
-            if (navigator.onLine && syncPending) {
-                setTimeout(syncWithGoogleSheets, 3000);
+            // Sin sync automatico — solo manual
             }
 
             // Mostrar última sincronización en consola
