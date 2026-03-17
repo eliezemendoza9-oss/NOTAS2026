@@ -28,6 +28,7 @@
             syncPending = true;
             localStorage.setItem('syncPending', 'true');
             updateSyncBar();
+            // NO sincronizar automaticamente — el usuario decide cuando subir
         }
 
         // Actualizar la barra de estado de sync
@@ -44,7 +45,7 @@
                 text.innerHTML = '☁️ Guardando en Nube...';
             } else if (syncPending) {
                 bar.style.background = '#f44336';
-                text.innerHTML = navigator.onLine ? '☁️ Guardando en Nube...' : '⚠️ HAY CAMBIOS PENDIENTES — Sin internet. Se guardará automáticamente cuando haya conexión.';
+                text.innerHTML = '⚠️ HAY CAMBIOS PENDIENTES — Toque "💾 Guardar Nube" para subir a Google Sheets.';
             } else {
                 bar.style.background = '#4CAF50';
                 text.innerHTML = '✅ Todo sincronizado con Google Sheets.';
@@ -102,7 +103,7 @@
         window.addEventListener('online', function() {
             console.log('Internet detectado - iniciando sync...');
             updateSyncBar();
-            setTimeout(syncWithGoogleSheets, 2000); // Esperar 2 seg para que la conexión se estabilice
+            // Sin sync automatico al detectar internet
         });
 
         window.addEventListener('offline', function() {
@@ -110,12 +111,7 @@
         });
 
         // Revisar sync cada 60 segundos si hay internet
-        setInterval(function() {
-            if (navigator.onLine && localStorage.getItem('syncPending')) {
-                syncWithGoogleSheets();
-            }
-            updateSyncBar();
-        }, 60000);
+        // Sin sync automatico por intervalo
     </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -949,7 +945,8 @@
     <!-- BARRA DE SINCRONIZACIÓN -->
     <div id="syncBar">
         <span id="syncText">⏳ Iniciando...</span>
-        <button onclick="loadFromCloud()" style="background:#1565c0;color:white;border:none;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:12px;font-weight:600;">☁️ Cargar desde Nube</button>
+        <button onclick="guardarNube()" style="background:#2e7d32;color:white;border:none;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:12px;font-weight:600;">💾 Guardar Nube</button>
+        <button onclick="loadFromCloud()" style="background:#1565c0;color:white;border:none;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:12px;font-weight:600;">☁️ Cargar Nube</button>
         <button onclick="resetTodoElSistema()" style="background:#7f1d1d;color:white;border:none;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:12px;font-weight:600;">🗑️ Borrar Todo</button>
     </div>
 
@@ -2643,6 +2640,17 @@
         }
 
         // ==================== CARGAR DESDE NUBE ====================
+        async function guardarNube() {
+            if (!navigator.onLine) { alert('Sin internet. Conecte el Starlink e intente de nuevo.'); return; }
+            const bar = document.getElementById('syncText');
+            bar.textContent = '☁️ Guardando en Nube...';
+            await syncWithGoogleSheets();
+            bar.textContent = '✅ Guardado en Google Sheets.';
+            syncPending = false;
+            localStorage.removeItem('syncPending');
+            setTimeout(updateSyncBar, 2000);
+        }
+
         function loadFromCloud() {
             if (!navigator.onLine) { alert('Sin internet. Conecte el Starlink e intente de nuevo.'); return; }
             const bar = document.getElementById('syncText');
