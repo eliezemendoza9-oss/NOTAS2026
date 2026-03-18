@@ -1408,60 +1408,116 @@
             <!-- ==================== PARTICIPACION ==================== -->
             <div id="participacion" class="tab-content">
                 <div style="padding:16px;">
-                    <h3 style="color:var(--primary);margin-bottom:16px;">🎤 PARTICIPACIÓN DE ESTUDIANTES</h3>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+                        <h3 style="color:var(--primary);margin:0;">🎤 PARTICIPACIÓN</h3>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                            <button class="btn btn-primary" onclick="abrirFormActividad()" style="height:32px;">➕ Nueva Actividad</button>
+                            <button class="btn" onclick="verActividadesList()" style="background:#64748b;color:white;height:32px;">📋 Actividades</button>
+                        </div>
+                    </div>
+
                     <!-- Filtros -->
-                    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;align-items:flex-end;">
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:flex-end;background:#f8fafc;padding:10px;border-radius:8px;">
                         <div>
-                            <label style="font-size:11px;font-weight:600;display:block;margin-bottom:3px;">Grupo:</label>
-                            <select id="partGrupo" onchange="renderParticipacion()" style="padding:5px 8px;border:1px solid #ccc;border-radius:4px;">
+                            <label style="font-size:10px;font-weight:700;display:block;margin-bottom:3px;color:#475569;">GRADO:</label>
+                            <select id="partGrado" onchange="renderParticipacion()" style="padding:5px 8px;border:1px solid #ccc;border-radius:4px;font-size:12px;">
+                                <option value="12">12° Grado</option>
+                                <option value="11">11° Grado</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="font-size:10px;font-weight:700;display:block;margin-bottom:3px;color:#475569;">GRUPO:</label>
+                            <select id="partGrupo" onchange="renderParticipacion()" style="padding:5px 8px;border:1px solid #ccc;border-radius:4px;font-size:12px;">
                                 <option value="12A">12° A</option>
                                 <option value="12B">12° B</option>
                                 <option value="12C">12° C</option>
                                 <option value="12D">12° D</option>
-                                <option value="11D">11° D</option>
                             </select>
                         </div>
                         <div>
-                            <label style="font-size:11px;font-weight:600;display:block;margin-bottom:3px;">Filtrar por Skill:</label>
-                            <select id="partSkillFiltro" onchange="renderParticipacion()" style="padding:5px 8px;border:1px solid #ccc;border-radius:4px;">
+                            <label style="font-size:10px;font-weight:700;display:block;margin-bottom:3px;color:#475569;">SKILL:</label>
+                            <select id="partSkillFiltro" onchange="renderParticipacion()" style="padding:5px 8px;border:1px solid #ccc;border-radius:4px;font-size:12px;">
                                 <option value="">Todos</option>
+                                <option value="Speaking">Speaking</option>
                                 <option value="Reading">Reading</option>
                                 <option value="Writing">Writing</option>
-                                <option value="Speaking">Speaking</option>
                                 <option value="Listening">Listening</option>
                                 <option value="Mediation">Mediation</option>
                             </select>
                         </div>
-                        <button class="btn btn-primary" onclick="abrirFormParticipacion()" style="height:32px;">➕ Registrar Actividad</button>
+                        <div>
+                            <label style="font-size:10px;font-weight:700;display:block;margin-bottom:3px;color:#475569;">ACTIVIDAD:</label>
+                            <select id="partActividadFiltro" onchange="renderParticipacion()" style="padding:5px 8px;border:1px solid #ccc;border-radius:4px;font-size:12px;">
+                                <option value="">Todas</option>
+                            </select>
+                        </div>
                     </div>
+
                     <!-- Formulario nueva actividad -->
-                    <div id="formParticipacion" style="display:none;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:14px;margin-bottom:14px;">
-                        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:10px;">
+                    <div id="formActividad" style="display:none;background:#f0f9ff;border:1px solid #bae6fd;border-radius:10px;padding:16px;margin-bottom:14px;">
+                        <h4 style="margin:0 0 12px;color:#0369a1;">Nueva Actividad</h4>
+                        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:12px;">
                             <div>
-                                <label style="font-size:11px;font-weight:600;display:block;margin-bottom:3px;">Fecha:</label>
-                                <input type="date" id="partFecha" style="padding:5px 8px;border:1px solid #ccc;border-radius:4px;">
+                                <label style="font-size:10px;font-weight:700;display:block;margin-bottom:3px;">FECHA:</label>
+                                <input type="date" id="actFecha" style="width:100%;padding:5px 8px;border:1px solid #ccc;border-radius:4px;font-size:12px;">
                             </div>
                             <div>
-                                <label style="font-size:11px;font-weight:600;display:block;margin-bottom:3px;">Actividad:</label>
-                                <input type="text" id="partActividad" placeholder="Ej: Class discussion" style="padding:5px 8px;border:1px solid #ccc;border-radius:4px;width:200px;">
+                                <label style="font-size:10px;font-weight:700;display:block;margin-bottom:3px;">ACTIVIDAD:</label>
+                                <input type="text" id="actNombre" placeholder="Ej: Class discussion" style="width:100%;padding:5px 8px;border:1px solid #ccc;border-radius:4px;font-size:12px;">
                             </div>
                             <div>
-                                <label style="font-size:11px;font-weight:600;display:block;margin-bottom:3px;">Skill:</label>
-                                <select id="partSkill" style="padding:5px 8px;border:1px solid #ccc;border-radius:4px;">
-                                    <option value="Speaking">Speaking</option>
-                                    <option value="Reading">Reading</option>
-                                    <option value="Writing">Writing</option>
-                                    <option value="Listening">Listening</option>
-                                    <option value="Mediation">Mediation</option>
+                                <label style="font-size:10px;font-weight:700;display:block;margin-bottom:3px;">SKILL:</label>
+                                <select id="actSkill" style="width:100%;padding:5px 8px;border:1px solid #ccc;border-radius:4px;font-size:12px;">
+                                    <option>Speaking</option><option>Reading</option><option>Writing</option>
+                                    <option>Listening</option><option>Mediation</option>
                                 </select>
                             </div>
-                            <button class="btn btn-success" onclick="guardarActividad()" style="height:32px;">✔ Guardar</button>
-                            <button class="btn" style="background:#64748b;color:white;height:32px;" onclick="document.getElementById('formParticipacion').style.display='none'">✕</button>
+                            <div>
+                                <label style="font-size:10px;font-weight:700;display:block;margin-bottom:3px;">PUNTOS MÁX:</label>
+                                <input type="number" id="actPuntos" value="5" min="1" max="100" style="width:100%;padding:5px 8px;border:1px solid #ccc;border-radius:4px;font-size:12px;">
+                            </div>
+                            <div>
+                                <label style="font-size:10px;font-weight:700;display:block;margin-bottom:3px;">THEME:</label>
+                                <input type="text" id="actTheme" placeholder="Ej: Environment" style="width:100%;padding:5px 8px;border:1px solid #ccc;border-radius:4px;font-size:12px;">
+                            </div>
+                            <div>
+                                <label style="font-size:10px;font-weight:700;display:block;margin-bottom:3px;">SCENARIO:</label>
+                                <input type="text" id="actScenario" placeholder="Ej: At school" style="width:100%;padding:5px 8px;border:1px solid #ccc;border-radius:4px;font-size:12px;">
+                            </div>
+                            <div>
+                                <label style="font-size:10px;font-weight:700;display:block;margin-bottom:3px;">BIG IDEA:</label>
+                                <input type="text" id="actBigIdea" placeholder="Ej: Sustainability" style="width:100%;padding:5px 8px;border:1px solid #ccc;border-radius:4px;font-size:12px;">
+                            </div>
+                            <div>
+                                <label style="font-size:10px;font-weight:700;display:block;margin-bottom:3px;">APLICA A:</label>
+                                <div id="actGruposCheck" style="display:flex;flex-wrap:wrap;gap:4px;padding:4px 0;">
+                                    <label style="font-size:11px;display:flex;align-items:center;gap:3px;"><input type="checkbox" value="12A" checked> 12A</label>
+                                    <label style="font-size:11px;display:flex;align-items:center;gap:3px;"><input type="checkbox" value="12B" checked> 12B</label>
+                                    <label style="font-size:11px;display:flex;align-items:center;gap:3px;"><input type="checkbox" value="12C" checked> 12C</label>
+                                    <label style="font-size:11px;display:flex;align-items:center;gap:3px;"><input type="checkbox" value="12D" checked> 12D</label>
+                                    <label style="font-size:11px;display:flex;align-items:center;gap:3px;"><input type="checkbox" value="11D"> 11D</label>
+                                </div>
+                            </div>
                         </div>
-                        <!-- Lista de estudiantes para marcar participacion -->
-                        <div id="partEstudiantesForm" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+                        <div style="display:flex;gap:8px;">
+                            <button class="btn btn-success" onclick="guardarNuevaActividad()">✔ Crear Actividad</button>
+                            <button class="btn" style="background:#64748b;color:white;" onclick="document.getElementById('formActividad').style.display='none'">✕ Cancelar</button>
+                        </div>
                     </div>
-                    <!-- Tabla de participacion acumulada -->
+
+                    <!-- Panel registro de participantes -->
+                    <div id="formRegistroParticipacion" style="display:none;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:16px;margin-bottom:14px;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                            <h4 style="margin:0;color:#166534;" id="registroActividadTitulo">Registrar Participación</h4>
+                            <button class="btn" style="background:#64748b;color:white;padding:4px 10px;" onclick="document.getElementById('formRegistroParticipacion').style.display='none'">✕</button>
+                        </div>
+                        <div id="registroEstudiantesList" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+                        <div style="margin-top:10px;">
+                            <button class="btn btn-success" onclick="guardarRegistroParticipacion()">✔ Guardar Participación</button>
+                        </div>
+                    </div>
+
+                    <!-- Tabla resumen -->
                     <div id="partTabla"></div>
                 </div>
             </div>
@@ -3068,111 +3124,212 @@
         }
 
         // ==================== PARTICIPACION ====================
-        let participacionData = {};
+        let participacionData = {};  // { actividades: [{id,fecha,nombre,skill,puntos,theme,scenario,bigIdea,grupos,registros:{sid:pts}}] }
+        let actividadRegistroActual = null;
 
         function loadParticipacion() {
             const s = localStorage.getItem('participacion_data');
             if (s) participacionData = JSON.parse(s);
+            if (!participacionData.actividades) participacionData.actividades = [];
         }
 
         function saveParticipacion() {
             localStorage.setItem('participacion_data', JSON.stringify(participacionData));
         }
 
-        function abrirFormParticipacion() {
-            const form = document.getElementById('formParticipacion');
-            form.style.display = 'block';
-            document.getElementById('partFecha').value = new Date().toISOString().split('T')[0];
-            document.getElementById('partActividad').value = '';
-            renderEstudiantesForm();
+        function abrirFormActividad() {
+            document.getElementById('formActividad').style.display = 'block';
+            document.getElementById('actFecha').value = new Date().toISOString().split('T')[0];
+            document.getElementById('actNombre').value = '';
+            document.getElementById('actPuntos').value = '5';
+            document.getElementById('actTheme').value = '';
+            document.getElementById('actScenario').value = '';
+            document.getElementById('actBigIdea').value = '';
         }
 
-        function renderEstudiantesForm() {
+        function guardarNuevaActividad() {
+            const fecha = document.getElementById('actFecha').value;
+            const nombre = document.getElementById('actNombre').value.trim();
+            const skill = document.getElementById('actSkill').value;
+            const puntos = parseFloat(document.getElementById('actPuntos').value) || 5;
+            const theme = document.getElementById('actTheme').value.trim();
+            const scenario = document.getElementById('actScenario').value.trim();
+            const bigIdea = document.getElementById('actBigIdea').value.trim();
+            const grupos = Array.from(document.querySelectorAll('#actGruposCheck input:checked')).map(c => c.value);
+
+            if (!fecha || !nombre) { alert('Complete fecha y nombre de actividad'); return; }
+            if (grupos.length === 0) { alert('Seleccione al menos un grupo'); return; }
+
+            const act = { id: Date.now().toString(), fecha, nombre, skill, puntos, theme, scenario, bigIdea, grupos, registros: {} };
+            participacionData.actividades.push(act);
+            saveParticipacion();
+            document.getElementById('formActividad').style.display = 'none';
+            renderParticipacion();
+            alert('Actividad creada. Ahora selecciónela para registrar participantes.');
+        }
+
+        function abrirRegistro(actId) {
+            const act = participacionData.actividades.find(a => a.id === actId);
+            if (!act) return;
+            actividadRegistroActual = actId;
             const grupo = document.getElementById('partGrupo').value;
             const lista = sharedStudents[grupo] || [];
-            const cont = document.getElementById('partEstudiantesForm');
-            cont.innerHTML = lista.map(s => `
-                <label style="display:flex;align-items:center;gap:5px;background:white;border:1px solid #e2e8f0;
-                    border-radius:6px;padding:6px 10px;cursor:pointer;font-size:12px;font-weight:600;">
-                    <input type="checkbox" value="${s.id}" style="width:16px;height:16px;cursor:pointer;">
-                    ${s.name}
-                </label>`).join('');
+            document.getElementById('registroActividadTitulo').textContent = `✏️ ${act.nombre} — ${grupo} (${act.puntos} pts)`;
+            const cont = document.getElementById('registroEstudiantesList');
+            cont.innerHTML = lista.map(s => {
+                const pts = act.registros[s.id] !== undefined ? act.registros[s.id] : '';
+                return `<div style="display:flex;align-items:center;gap:6px;background:white;border:1px solid #e2e8f0;border-radius:6px;padding:6px 10px;">
+                    <input type="checkbox" id="chk_${s.id}" value="${s.id}" ${pts!==''?'checked':''} style="width:15px;height:15px;">
+                    <label for="chk_${s.id}" style="font-size:12px;font-weight:600;flex:1;cursor:pointer;">${s.name}</label>
+                    <input type="number" id="pts_${s.id}" value="${pts}" min="0" max="${act.puntos}" placeholder="${act.puntos}"
+                        style="width:50px;padding:3px 6px;border:1px solid #ccc;border-radius:4px;font-size:12px;text-align:center;">
+                    <span style="font-size:10px;color:#888;">/${act.puntos}</span>
+                </div>`;
+            }).join('');
+            document.getElementById('formRegistroParticipacion').style.display = 'block';
+            document.getElementById('formRegistroParticipacion').scrollIntoView({behavior:'smooth'});
         }
 
-        function guardarActividad() {
+        function guardarRegistroParticipacion() {
+            const act = participacionData.actividades.find(a => a.id === actividadRegistroActual);
+            if (!act) return;
             const grupo = document.getElementById('partGrupo').value;
-            const fecha = document.getElementById('partFecha').value;
-            const actividad = document.getElementById('partActividad').value.trim();
-            const skill = document.getElementById('partSkill').value;
-            if (!fecha || !actividad) { alert('Complete fecha y actividad'); return; }
-
-            const checks = document.querySelectorAll('#partEstudiantesForm input[type=checkbox]:checked');
-            if (checks.length === 0) { alert('Marque al menos un estudiante'); return; }
-
-            if (!participacionData[grupo]) participacionData[grupo] = [];
-            checks.forEach(cb => {
-                participacionData[grupo].push({
-                    id: cb.value,
-                    fecha, actividad, skill,
-                    ts: Date.now()
-                });
+            const lista = sharedStudents[grupo] || [];
+            lista.forEach(s => {
+                const chk = document.getElementById('chk_'+s.id);
+                const pts = document.getElementById('pts_'+s.id);
+                if (chk && chk.checked) {
+                    act.registros[s.id] = parseFloat(pts?.value) || act.puntos;
+                } else {
+                    delete act.registros[s.id];
+                }
             });
-
             saveParticipacion();
-            document.getElementById('formParticipacion').style.display = 'none';
+            document.getElementById('formRegistroParticipacion').style.display = 'none';
             renderParticipacion();
         }
 
+        function verActividadesList() {
+            const grado = document.getElementById('partGrado').value;
+            const acts = (participacionData.actividades || []).filter(a => a.grupos.some(g => g.startsWith(grado)));
+            if (acts.length === 0) { alert('No hay actividades para este grado'); return; }
+            alert('Actividades:\n' + acts.map((a,i) => `${i+1}. ${a.fecha} — ${a.nombre} (${a.skill}, ${a.puntos}pts)`).join('\n'));
+        }
+
         function renderParticipacion() {
+            const grado = document.getElementById('partGrado').value;
             const grupo = document.getElementById('partGrupo').value;
             const skillFiltro = document.getElementById('partSkillFiltro').value;
-            const lista = sharedStudents[grupo] || [];
-            const registros = (participacionData[grupo] || [])
-                .filter(r => !skillFiltro || r.skill === skillFiltro);
+            const actFiltro = document.getElementById('partActividadFiltro').value;
 
-            // Acumular por estudiante
-            const acum = {};
-            lista.forEach(s => acum[s.id] = {name: s.name, total: 0, skills: {}});
-            registros.forEach(r => {
-                if (!acum[r.id]) acum[r.id] = {name: r.id, total: 0, skills: {}};
-                acum[r.id].total++;
-                acum[r.id].skills[r.skill] = (acum[r.id].skills[r.skill] || 0) + 1;
-            });
+            // Actualizar selector de grupo segun grado
+            const partGrupoSel = document.getElementById('partGrupo');
+            const gruposDisp = grado === '12' ? ['12A','12B','12C','12D'] : ['11D'];
+            partGrupoSel.innerHTML = gruposDisp.map(g => `<option value="${g}" ${g===grupo&&gruposDisp.includes(grupo)?'selected':''}>${g.replace(/(\d+)([A-Z])/,'$1° $2')}</option>`).join('');
+            const grupoActual = gruposDisp.includes(grupo) ? grupo : gruposDisp[0];
 
-            const skills = ['Speaking','Reading','Writing','Listening','Mediation'];
+            // Filtrar actividades aplicables a este grado/grupo
+            let acts = (participacionData.actividades || []).filter(a => a.grupos.includes(grupoActual));
+            if (skillFiltro) acts = acts.filter(a => a.skill === skillFiltro);
+
+            // Actualizar selector de actividades
+            const sel = document.getElementById('partActividadFiltro');
+            sel.innerHTML = '<option value="">Todas</option>' + acts.map(a => `<option value="${a.id}" ${a.id===actFiltro?'selected':''}>${a.fecha} — ${a.nombre}</option>`).join('');
+            if (actFiltro) acts = acts.filter(a => a.id === actFiltro);
+
+            const lista = sharedStudents[grupoActual] || [];
             const cont = document.getElementById('partTabla');
 
-            if (lista.length === 0) {
-                cont.innerHTML = '<p style="color:#888;padding:20px;">No hay estudiantes en este grupo.</p>';
+            if (acts.length === 0) {
+                cont.innerHTML = `<div style="text-align:center;padding:30px;color:#94a3b8;">
+                    <div style="font-size:30px;">🎤</div>
+                    <div style="font-size:13px;margin-top:8px;">No hay actividades. Cree una con ➕ Nueva Actividad</div>
+                </div>`;
                 return;
             }
 
+            // Calcular puntos y nota por estudiante
+            const resumen = {};
+            lista.forEach(s => resumen[s.id] = {name:s.name, ptsObtenidos:0, ptsMaximos:0, participaciones:0});
+
+            acts.forEach(act => {
+                lista.forEach(s => {
+                    resumen[s.id].ptsMaximos += act.puntos;
+                    if (act.registros[s.id] !== undefined) {
+                        resumen[s.id].ptsObtenidos += act.registros[s.id];
+                        resumen[s.id].participaciones++;
+                    }
+                });
+            });
+
+            // Solo mostrar quienes participaron
+            const participaron = lista.filter(s => resumen[s.id].participaciones > 0);
+            const noParticiparon = lista.filter(s => resumen[s.id].participaciones === 0);
+
+            const skills = ['Speaking','Reading','Writing','Listening','Mediation'];
+
             cont.innerHTML = `
+            <!-- Actividades disponibles -->
+            <div style="margin-bottom:14px;">
+                <div style="font-size:11px;font-weight:700;color:#475569;margin-bottom:6px;text-transform:uppercase;">Actividades (toque para registrar participación)</div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                    ${acts.map(a => `
+                    <div onclick="abrirRegistro('${a.id}')" style="background:white;border:2px solid #e2e8f0;border-radius:8px;padding:8px 12px;cursor:pointer;transition:all 0.2s;max-width:220px;"
+                        onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='#e2e8f0'">
+                        <div style="font-size:11px;font-weight:700;color:var(--primary);">${a.nombre}</div>
+                        <div style="font-size:10px;color:#64748b;">${a.fecha} · ${a.skill} · ${a.puntos}pts</div>
+                        ${a.theme?`<div style="font-size:9px;color:#94a3b8;">Theme: ${a.theme}</div>`:''}
+                        ${a.bigIdea?`<div style="font-size:9px;color:#94a3b8;">Big idea: ${a.bigIdea}</div>`:''}
+                        <div style="font-size:10px;color:#16a34a;margin-top:3px;">✓ ${Object.keys(a.registros).length} participantes</div>
+                    </div>`).join('')}
+                </div>
+            </div>
+
+            <!-- Tabla solo con quienes participaron -->
+            ${participaron.length > 0 ? `
+            <div style="font-size:11px;font-weight:700;color:#475569;margin-bottom:6px;text-transform:uppercase;">Estudiantes que participaron</div>
+            <div style="overflow-x:auto;">
             <table style="width:100%;border-collapse:collapse;font-size:12px;">
                 <thead>
                     <tr style="background:var(--primary);color:white;">
-                        <th style="padding:8px;text-align:left;">N°</th>
-                        <th style="padding:8px;text-align:left;">ESTUDIANTE</th>
-                        ${skills.map(sk => `<th style="padding:8px;text-align:center;">${sk}</th>`).join('')}
-                        <th style="padding:8px;text-align:center;background:#e65100;">TOTAL</th>
+                        <th style="padding:8px;text-align:left;min-width:140px;">ESTUDIANTE</th>
+                        ${acts.map(a=>`<th style="padding:6px 8px;text-align:center;min-width:80px;font-size:10px;">${a.nombre}<br><span style="opacity:0.8;">${a.skill}</span></th>`).join('')}
+                        <th style="padding:8px;text-align:center;background:#1e3a5f;">PTS</th>
+                        <th style="padding:8px;text-align:center;background:#e65100;">NOTA</th>
                     </tr>
                 </thead>
                 <tbody>
-                    ${lista.map((s,i) => {
-                        const d = acum[s.id] || {total:0,skills:{}};
+                    ${participaron.map((s,i) => {
+                        const r = resumen[s.id];
+                        const nota = r.ptsMaximos > 0 ? Math.min(5, (r.ptsObtenidos / r.ptsMaximos) * 5).toFixed(1) : '0.0';
+                        const notaNum = parseFloat(nota);
+                        const notaColor = notaNum>=4?'#166534':notaNum>=3?'#92400e':'#dc2626';
+                        const notaBg = notaNum>=4?'#dcfce7':notaNum>=3?'#fef3c7':'#fee2e2';
                         return `<tr style="border-bottom:1px solid #e2e8f0;${i%2===0?'background:#f8fafc':''}">
-                            <td style="padding:7px 8px;">${i+1}</td>
                             <td style="padding:7px 8px;font-weight:600;">${s.name}</td>
-                            ${skills.map(sk => `<td style="padding:7px 8px;text-align:center;">
-                                ${d.skills[sk] ? `<span style="background:#dcfce7;color:#166534;border-radius:10px;padding:2px 8px;font-weight:700;">${d.skills[sk]}</span>` : '—'}
-                            </td>`).join('')}
-                            <td style="padding:7px 8px;text-align:center;font-weight:700;color:var(--primary);">${d.total}</td>
+                            ${acts.map(a => {
+                                const pts = a.registros[s.id];
+                                return `<td style="padding:7px 8px;text-align:center;">
+                                    ${pts!==undefined ? `<span style="background:#dcfce7;color:#166534;border-radius:10px;padding:2px 8px;font-weight:700;">${pts}</span>` : '—'}
+                                </td>`;
+                            }).join('')}
+                            <td style="padding:7px 8px;text-align:center;font-weight:700;">${r.ptsObtenidos}/${r.ptsMaximos}</td>
+                            <td style="padding:7px 8px;text-align:center;">
+                                <span style="background:${notaBg};color:${notaColor};border-radius:8px;padding:3px 10px;font-weight:800;font-size:14px;">${nota}</span>
+                            </td>
                         </tr>`;
                     }).join('')}
                 </tbody>
-            </table>`;
+            </table>
+            </div>` : `<div style="color:#94a3b8;padding:10px;font-size:12px;">Toque una actividad arriba para registrar participantes.</div>`}
 
-            renderEstudiantesForm();
+            ${noParticiparon.length > 0 ? `
+            <details style="margin-top:10px;">
+                <summary style="font-size:11px;color:#94a3b8;cursor:pointer;">Sin participación (${noParticiparon.length})</summary>
+                <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;">
+                    ${noParticiparon.map(s=>`<span style="background:#f1f5f9;color:#64748b;border-radius:4px;padding:3px 8px;font-size:11px;">${s.name}</span>`).join('')}
+                </div>
+            </details>` : ''}`;
         }
 
         // ==================== BUSCAR ESTUDIANTE ====================
