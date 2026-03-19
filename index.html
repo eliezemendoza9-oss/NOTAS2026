@@ -3595,32 +3595,40 @@ const CURRICULUM = {"11": [{"number": 1, "scenario": "Our Town Council", "big_id
                     <div style="display:flex;flex-wrap:wrap;gap:4px;">${attDetalle.join('')}</div>`
                 : `<div style="color:#94a3b8;font-size:12px;">Sin registros de asistencia</div>`;
 
-                // PARTICIPACION
-                const parts = (participacionData[s.grupo] || []).filter(r => r.id === s.id)
-                    .sort((a,b) => a.fecha > b.fecha ? -1 : 1);
-                const skillCount = {};
-                parts.forEach(p => skillCount[p.skill] = (skillCount[p.skill]||0)+1);
-                const skillColors = {Speaking:'#b45309',Reading:'#0369a1',Writing:'#166534',Listening:'#7c3aed',Mediation:'#be185d'};
+                // PARTICIPACION — nuevo formato {actividades:[...]}
+                const skillColors = {Speaking:'#b45309',Reading:'#0369a1',Writing:'#166634',Listening:'#7c3aed',Mediation:'#be185d'};
                 const skillBg = {Speaking:'#fef3c7',Reading:'#e0f2fe',Writing:'#dcfce7',Listening:'#ede9fe',Mediation:'#fce7f3'};
-                const partBlock = parts.length > 0 ? `
+                const allActs = (participacionData.actividades || []).filter(a => 
+                    a.grupos && a.grupos.includes(s.grupo) && a.registros && a.registros[s.id] !== undefined
+                ).sort((a,b) => a.fecha > b.fecha ? -1 : 1);
+
+                // Calcular nota por skill usando la misma logica de Notas
+                const aprCalcBuscar = calcNotaApreciacion(s.id, s.grupo, null);
+                const skillCount = {};
+                allActs.forEach(a => skillCount[a.skill] = (skillCount[a.skill]||0)+1);
+
+                const partBlock = allActs.length > 0 ? `
                     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
                         <div style="background:#fef3c7;border-radius:10px;padding:8px 12px;text-align:center;">
-                            <div style="font-size:20px;font-weight:800;color:#92400e;">${parts.length}</div>
+                            <div style="font-size:20px;font-weight:800;color:#92400e;">${allActs.length}</div>
                             <div style="font-size:9px;color:#666;">TOTAL</div>
                         </div>
-                        ${Object.keys(skillCount).map(sk=>`
-                        <div style="background:${skillBg[sk]||'#f1f5f9'};border-radius:8px;padding:6px 10px;text-align:center;">
-                            <div style="font-size:14px;font-weight:800;color:${skillColors[sk]||'#333'};">${skillCount[sk]}</div>
+                        ${['Speaking','Reading','Writing','Listening','Mediation'].filter(sk=>skillCount[sk]).map(sk=>`
+                        <div style="background:${skillBg[sk]};border-radius:8px;padding:6px 10px;text-align:center;">
+                            <div style="font-size:13px;font-weight:800;color:${skillColors[sk]};">${skillCount[sk]}x</div>
+                            <div style="font-size:11px;font-weight:700;color:${skillColors[sk]};">${aprCalcBuscar[SKILL_MAP[sk]]||'—'}</div>
                             <div style="font-size:9px;color:#666;">${sk}</div>
                         </div>`).join('')}
                     </div>
                     <div style="display:flex;flex-direction:column;gap:4px;">
-                        ${parts.map(p => {
-                            const [y,m,d] = (p.fecha||'').split('-');
+                        ${allActs.map(a => {
+                            const [y,m,d] = (a.fecha||'').split('-');
+                            const pts = a.registros[s.id];
                             return `<div style="display:flex;align-items:center;gap:8px;background:#fffbeb;border-radius:6px;padding:5px 10px;">
                                 <span style="font-size:10px;color:#666;white-space:nowrap;">${d||''}/${m||''}/${y||''}</span>
-                                <span style="background:${skillBg[p.skill]||'#f1f5f9'};color:${skillColors[p.skill]||'#333'};border-radius:4px;padding:1px 7px;font-size:10px;font-weight:700;">${p.skill}</span>
-                                <span style="font-size:11px;color:#374151;flex:1;">${p.actividad}</span>
+                                <span style="background:${skillBg[a.skill]||'#f1f5f9'};color:${skillColors[a.skill]||'#333'};border-radius:4px;padding:1px 7px;font-size:10px;font-weight:700;">${a.skill}</span>
+                                <span style="font-size:11px;color:#374151;flex:1;">${a.nombre}</span>
+                                <span style="font-size:11px;font-weight:700;color:#166534;">${pts}/${a.puntos}pts</span>
                             </div>`;
                         }).join('')}
                     </div>` : `<div style="color:#94a3b8;font-size:12px;">Sin participaciones registradas</div>`;
