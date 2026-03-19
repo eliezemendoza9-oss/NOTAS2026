@@ -1795,13 +1795,36 @@ const CURRICULUM = {"11": [{"number": 1, "scenario": "Our Town Council", "big_id
                 const promParciales = calcPromedio(savedGrades, 'p', 6);
                 tr.innerHTML += `<td class="promedio-col ${getGradeClass(promParciales)}">${promParciales}</td>`;
 
+                // a1-a5: calculados desde Participacion | a6: manual
+                const aprCalc = calcNotaApreciacion(student.id, currentGroupNotas, currentTrimesterNotas);
                 for (let i = 1; i <= 6; i++) {
-                    const raw = savedGrades[`a${i}`];
-                    const value = (raw !== '' && raw !== undefined && raw !== null && !isNaN(parseFloat(raw)))
-                        ? parseFloat(raw).toFixed(1) : '';
-                    const cell = `<td><input type="text" class="grade-input" value="${value}" 
+                    let value, cell;
+                    if (i <= 5) {
+                        // Calculado desde participacion — solo lectura
+                        const calcVal = aprCalc[`a${i}`];
+                        // Si hay valor calculado, usarlo; si no, usar el guardado
+                        value = (calcVal !== '' && calcVal !== undefined) ? calcVal : 
+                                (savedGrades[`a${i}`] !== '' && savedGrades[`a${i}`] !== undefined && !isNaN(parseFloat(savedGrades[`a${i}`]))) 
+                                ? parseFloat(savedGrades[`a${i}`]).toFixed(1) : '';
+                        // Guardar automaticamente si hay valor calculado
+                        if (calcVal !== '' && calcVal !== undefined) {
+                            if (!grades[gradeKey]) grades[gradeKey] = {};
+                            grades[gradeKey][`a${i}`] = calcVal;
+                        }
+                        const skillNames = ['','Speaking','Reading','Writing','Listening','Mediation'];
+                        cell = `<td title="${skillNames[i]}"><input type="text" class="grade-input" value="${value}" 
+                                  data-student="${student.id}" data-field="a${i}" 
+                                  readonly style="background:#f0f9ff;cursor:default;"
+                                  title="Calculado desde Participación — ${skillNames[i]}"></td>`;
+                    } else {
+                        // a6: manual
+                        const raw = savedGrades[`a${i}`];
+                        value = (raw !== '' && raw !== undefined && raw !== null && !isNaN(parseFloat(raw)))
+                            ? parseFloat(raw).toFixed(1) : '';
+                        cell = `<td><input type="text" class="grade-input" value="${value}" 
                                   data-student="${student.id}" data-field="a${i}" 
                                   onchange="updateGrade(this)"></td>`;
+                    }
                     tr.innerHTML += cell;
                 }
 
@@ -3789,6 +3812,38 @@ const CURRICULUM = {"11": [{"number": 1, "scenario": "Our Town Council", "big_id
             participacionData.actividades.splice(num-1, 1);
             saveParticipacion();
             renderParticipacion();
+        }
+
+        // ==================== APRECIACION DESDE PARTICIPACION ====================
+        const SKILL_MAP = {
+            'Speaking':  'a1',
+            'Reading':   'a2',
+            'Writing':   'a3',
+            'Listening': 'a4',
+            'Mediation': 'a5'
+        };
+
+        function calcNotaApreciacion(studentId, grupo, trimestre) {
+            const acts = (participacionData.actividades || []).filter(a => 
+                a.grupos && a.grupos.includes(grupo)
+            );
+            const result = {};
+            Object.keys(SKILL_MAP).forEach(skill => {
+                const field = SKILL_MAP[skill];
+                const actsSkill = acts.filter(a => a.skill === skill);
+                if (actsSkill.length === 0) { result[field] = ''; return; }
+                let ptsObtenidos = 0, ptsMaximos = 0;
+                actsSkill.forEach(act => {
+                    ptsMaximos += parseFloat(act.puntos) || 0;
+                    if (act.registros && act.registros[studentId] !== undefined) {
+                        ptsObtenidos += parseFloat(act.registros[studentId]) || 0;
+                    }
+                });
+                if (ptsMaximos === 0) { result[field] = ''; return; }
+                const nota = Math.min(5.0, (ptsObtenidos / ptsMaximos) * 5);
+                result[field] = nota.toFixed(1);
+            });
+            return result;
         }
         // ==================== COPIAS ====================
         let copiasData = {};
