@@ -1074,6 +1074,7 @@ const CURRICULUM = {"11": [{"number": 1, "scenario": "Our Town Council", "big_id
                     <div class="toolbar-buttons" id="toolbarBtnsNotas">
                         <button class="btn btn-primary" onclick="addStudentNotas()">➕ Agregar</button>
                         <button class="btn btn-danger"  onclick="removeStudentNotas()">➖ Eliminar</button>
+                        <button class="btn btn-danger"  onclick="borrarTabNotas()">🗑️ Borrar Notas</button>
                         <button class="btn btn-success" onclick="saveGrades()">💾 Guardar</button>
                         <button class="btn btn-success" onclick="window.print()">🖨️ Imprimir</button>
                         <button class="btn btn-warning" onclick="exportExcelNotas()">📊 Excel</button>
@@ -1196,6 +1197,7 @@ const CURRICULUM = {"11": [{"number": 1, "scenario": "Our Town Council", "big_id
                     <div class="toolbar-buttons" id="toolbarBtnsAsist">
                         <button class="btn btn-primary" onclick="openAddStudentAsistencia()">➕ Agregar</button>
                         <button class="btn btn-danger"  onclick="openRemoveStudentAsistencia()">➖ Eliminar</button>
+                        <button class="btn btn-danger"  onclick="borrarTabAsistencia()">🗑️ Borrar Asistencia</button>
                         <button class="btn btn-success" onclick="window.print()">🖨️ Imprimir</button>
                         <button class="btn btn-warning" onclick="exportExcelAsistencia()">📊 Excel</button>
                         <button class="btn btn-warning" onclick="exportJSONAsistencia()">💾 Exportar</button>
@@ -1304,6 +1306,8 @@ const CURRICULUM = {"11": [{"number": 1, "scenario": "Our Town Council", "big_id
                 </div>
                 <div class="toolbar-buttons" id="toolbarBtnsCopias">
                     <button class="btn btn-primary" onclick="openAddCopia()">➕ Nueva Copia</button>
+                    <button class="btn btn-danger" onclick="borrarCopiaIndividual()">➖ Eliminar Copia</button>
+                    <button class="btn btn-danger" onclick="borrarTabCopias()">🗑️ Borrar Copias</button>
                     <button class="btn btn-success" onclick="window.print()">🖨️ Imprimir</button>
                 </div>
             </div>
@@ -1347,6 +1351,8 @@ const CURRICULUM = {"11": [{"number": 1, "scenario": "Our Town Council", "big_id
                 </div>
                 <div class="toolbar-buttons" id="toolbarBtnsTalleres">
                     <button class="btn btn-primary" onclick="openAddTaller()">➕ Nuevo Taller</button>
+                    <button class="btn btn-danger" onclick="borrarTallerIndividual()">➖ Eliminar Taller</button>
+                    <button class="btn btn-danger" onclick="borrarTabTalleres()">🗑️ Borrar Talleres</button>
                     <button class="btn btn-success" onclick="window.print()">🖨️ Imprimir</button>
                 </div>
             </div>
@@ -1389,6 +1395,8 @@ const CURRICULUM = {"11": [{"number": 1, "scenario": "Our Town Council", "big_id
                 </div>
                 <div class="toolbar-buttons" id="toolbarBtnsRubrica">
                     <button class="btn btn-primary" onclick="openAddCriterio()">➕ Agregar Criterio</button>
+                    <button class="btn btn-danger" onclick="borrarCriterioIndividual()">➖ Eliminar Criterio</button>
+                    <button class="btn btn-danger" onclick="borrarTabRubrica()">🗑️ Borrar Rúbrica</button>
                     <button class="btn btn-success" onclick="window.print()">🖨️ Imprimir</button>
                 </div>
             </div>
@@ -1416,6 +1424,8 @@ const CURRICULUM = {"11": [{"number": 1, "scenario": "Our Town Council", "big_id
                         <div style="display:flex;gap:8px;flex-wrap:wrap;">
                             <button class="btn btn-primary" onclick="abrirFormActividad()" style="height:32px;">➕ Nueva Actividad</button>
                             <button class="btn" onclick="verActividadesList()" style="background:#64748b;color:white;height:32px;">📋 Actividades</button>
+                            <button class="btn btn-danger" onclick="borrarActividadIndividual()" style="height:32px;">➖ Eliminar Actividad</button>
+                            <button class="btn btn-danger" onclick="borrarTabParticipacion()" style="height:32px;">🗑️ Borrar Todo</button>
                         </div>
                     </div>
 
@@ -3687,6 +3697,98 @@ const CURRICULUM = {"11": [{"number": 1, "scenario": "Our Town Council", "big_id
                     </div>
                 </div>`;
             }).join('');
+        }
+
+        // ==================== BORRADO POR TAB ====================
+
+        function borrarTabNotas() {
+            if (!confirm('¿Borrar TODAS las notas del grupo ' + currentGroupNotas + '?\nLos estudiantes se conservan.')) return;
+            const keys = Object.keys(grades).filter(k => k.startsWith(currentGroupNotas));
+            keys.forEach(k => delete grades[k]);
+            saveNotas();
+            renderNotas();
+        }
+
+        function borrarTabAsistencia() {
+            if (!confirm('¿Borrar TODA la asistencia del grupo ' + groupAsistencia + '?\nLos estudiantes se conservan.')) return;
+            delete attendance[groupAsistencia];
+            saveAsistencia();
+            renderAsistencia();
+        }
+
+        function borrarTabCopias() {
+            if (!confirm('¿Borrar TODAS las copias?')) return;
+            copiasData = {};
+            saveCopias();
+            renderCopias();
+        }
+
+        function borrarCopiaIndividual() {
+            const keys = Object.keys(copiasData);
+            if (keys.length === 0) { alert('No hay copias registradas.'); return; }
+            const lista = keys.map((k,i) => `${i+1}. ${copiasData[k].descripcion||k} — ${copiasData[k].fecha||''}`).join('\n');
+            const num = parseInt(prompt('Seleccione el número de la copia a eliminar:\n' + lista));
+            if (!num || num < 1 || num > keys.length) return;
+            delete copiasData[keys[num-1]];
+            saveCopias();
+            renderCopias();
+        }
+
+        function borrarTabTalleres() {
+            if (!confirm('¿Borrar TODOS los talleres?')) return;
+            talleresData = {};
+            saveTalleres();
+            renderTalleres();
+        }
+
+        function borrarTallerIndividual() {
+            const keys = Object.keys(talleresData);
+            if (keys.length === 0) { alert('No hay talleres registrados.'); return; }
+            const lista = keys.map((k,i) => `${i+1}. ${talleresData[k].nombre||k}`).join('\n');
+            const num = parseInt(prompt('Seleccione el número del taller a eliminar:\n' + lista));
+            if (!num || num < 1 || num > keys.length) return;
+            delete talleresData[keys[num-1]];
+            saveTalleres();
+            renderTalleres();
+        }
+
+        function borrarTabRubrica() {
+            if (!confirm('¿Borrar TODA la rúbrica?')) return;
+            rubricaData = {};
+            saveRubrica();
+            renderRubrica();
+        }
+
+        function borrarCriterioIndividual() {
+            const grupo = document.getElementById('groupSelectRubrica')?.value || '12A';
+            const trim = document.getElementById('trimesterSelectRubrica')?.value || '1';
+            const criterios = rubricaData[grupo]?.[trim] || {};
+            const keys = Object.keys(criterios);
+            if (keys.length === 0) { alert('No hay criterios en este grupo/trimestre.'); return; }
+            const lista = keys.map((k,i) => `${i+1}. ${criterios[k].nombre||k}`).join('\n');
+            const num = parseInt(prompt('Seleccione el número del criterio a eliminar:\n' + lista));
+            if (!num || num < 1 || num > keys.length) return;
+            delete rubricaData[grupo][trim][keys[num-1]];
+            saveRubrica();
+            renderRubrica();
+        }
+
+        function borrarTabParticipacion() {
+            if (!confirm('¿Borrar TODAS las actividades de participación?')) return;
+            participacionData = {actividades: []};
+            saveParticipacion();
+            renderParticipacion();
+        }
+
+        function borrarActividadIndividual() {
+            const acts = participacionData.actividades || [];
+            if (acts.length === 0) { alert('No hay actividades registradas.'); return; }
+            const lista = acts.map((a,i) => `${i+1}. ${a.fecha} — ${a.nombre} (${a.skill})`).join('\n');
+            const num = parseInt(prompt('Seleccione el número de la actividad a eliminar:\n' + lista));
+            if (!num || num < 1 || num > acts.length) return;
+            participacionData.actividades.splice(num-1, 1);
+            saveParticipacion();
+            renderParticipacion();
         }
         // ==================== COPIAS ====================
         let copiasData = {};
