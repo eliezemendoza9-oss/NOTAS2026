@@ -2917,6 +2917,22 @@ const CURRICULUM = {"11": [{"number": 1, "scenario": "Our Town Council", "big_id
                     body: JSON.stringify(payload),
                     mode: 'no-cors'
                 });
+
+                // Guardar participacion directo en su propia hoja
+                const partData = localStorage.getItem('participacion_data');
+                if (partData) {
+                    await fetch(APPS_SCRIPT_URL, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            writeKey: 'MEDUCA2026BOCA',
+                            action: 'saveParticipacion',
+                            participacion: JSON.parse(partData)
+                        }),
+                        mode: 'no-cors'
+                    });
+                }
+
                 bar.textContent = '✅ Guardado en Google Sheets.';
                 syncPending = false;
                 localStorage.removeItem('syncPending');
