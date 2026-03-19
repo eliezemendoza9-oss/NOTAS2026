@@ -17,6 +17,10 @@
     <!-- ==================== CONFIGURACIÓN GOOGLE SHEETS SYNC ==================== -->
     <script>
         // ⚠️ URL DE TU GOOGLE APPS SCRIPT - NO CAMBIAR
+const CURRICULUM = {"11": [{"number": 1, "scenario": "Our Town Council", "big_idea": "Being Local and Global Citizens", "big_idea_id": 4, "theme1": "How Our Town Operates", "theme2": "How We Share Our Voice in the Community", "linguistic_competences": ["Passive voice to explain support structures", "Reported speech", "Modals 'can', 'should', 'must', 'may', 'might'"]}, {"number": 2, "scenario": "Our Changing Forests", "big_idea": "Nature and Wellness", "big_idea_id": 3, "theme1": "I Explored the Ecological History Of...", "theme2": "How Our Ecology Is Changing", "linguistic_competences": ["Present Perfect", "First and second conditional", "Comparatives"]}, {"number": 3, "scenario": "Managing Stress in Changing Times", "big_idea": "Nature and Wellness", "big_idea_id": 3, "theme1": "Breathing to Relax", "theme2": "Forest Bathing and other Biohacks", "linguistic_competences": ["Gerunds", "Modals for advice", "Present Continuous for trends"]}, {"number": 4, "scenario": "Preserving Our Heritage", "big_idea": "Family and Society", "big_idea_id": 2, "theme1": "Learning How We Take Care of Our Past", "theme2": "What Should We Preserve in the Future?", "linguistic_competences": ["Relative clauses like 'which' and 'where'", "Past Simple vs. Present Perfect", "Future Simple for predictions"]}, {"number": 5, "scenario": "Panama's Role in the World", "big_idea": "Being Local and Global Citizens", "big_idea_id": 4, "theme1": "The Importance of Panama in Global Trade", "theme2": "How the Canal Impacts Panama's Future", "linguistic_competences": ["Passive voice", "Second and third conditionals", "Present Perfect Continuous"]}, {"number": 6, "scenario": "Entrepreneurial Spirit", "big_idea": "Expressing Ourselves and Connecting with Others", "big_idea_id": 1, "theme1": "My Genius Innovations", "theme2": "How to Market a Business Idea", "linguistic_competences": ["First conditional", "Present Perfect for innovations", "Future Continuous"]}, {"number": 7, "scenario": "Intelligent Robots", "big_idea": "Being Local and Global Citizens", "big_idea_id": 4, "optional": true, "theme1": "What Is Artificial Intelligence?", "theme2": "How Technology Changes Society", "linguistic_competences": ["Conditional forms", "Future Simple", "Passive voice"]}, {"number": 8, "scenario": "International English", "big_idea": "Being Local and Global Citizens", "big_idea_id": 4, "optional": true, "theme1": " How English Is Used in Workplaces Globally.", "theme2": " What Communication Skills Are Important in the Workplace?", "linguistic_competences": ["Present Perfect", "Modals for necessity: must, could, should, and can", "Indirect Questions"]}], "12": [{"number": 1, "scenario": "Supporting Our Community", "big_idea": "Family and Society", "big_idea_id": 2, "theme1": "How Does the Government Support Communities?", "theme2": "Volunteering in Our Community", "linguistic_competences": ["Passive voice to explain support structures", "Modals for necessity", "Present Perfect Continuous for detailed descriptions"]}, {"number": 2, "scenario": "My Personal Success Story", "big_idea": "Expressing Ourselves and Connecting with Others", "big_idea_id": 1, "theme1": "How I Am Successful", "theme2": "Saving for Future Goals!", "linguistic_competences": ["Present Perfect to reflect achievements", "Future Continuous to describe long-term goals", "First conditional to discuss future success"]}, {"number": 3, "scenario": "Exploring Our Global Community", "big_idea": "Family and Society", "big_idea_id": 2, "theme1": "A Dream Trip Around the World", "theme2": "What Can I Learn From Other Cultures?", "linguistic_competences": ["Second conditional for hypothetical travel experiences", "Superlatives for comparing places", "Past Continuous to narrate past experiences"]}, {"number": 4, "scenario": "International Communication", "big_idea": "Being Local and Global Citizens", "big_idea_id": 4, "theme1": "Introducing Panama to the World", "theme2": "Communicating Panama's Importance", "linguistic_competences": ["Passive voice to introduce Panama's role", "Modals of necessity in professional settings", "Relative clauses to add information"]}, {"number": 5, "scenario": "Robots on Earth and in Space", "big_idea": "Being Local and Global Citizens", "big_idea_id": 4, "theme1": "How Robots Are Used in Panama", "theme2": "The Future Exploration of Space", "linguistic_competences": ["Future Perfect for discussing technology impacts", "Passive voice for scientific reporting", "Zero conditional for cause-effect scenarios"]}, {"number": 6, "scenario": "Checking in on Health", "big_idea": "Nature and Wellness", "big_idea_id": 3, "theme1": "Using Health Technology to Form Good Habits", "theme2": "Healthy Minds for Healthy Bodies", "linguistic_competences": ["Present Perfect Continuous to highlight ongoing health efforts and routines", "Second conditional to discuss hypothetical situations about improving well-being", "Modals for possibility to suggest health strategies or recommendations"]}, {"number": 7, "scenario": "Learning To Balance", "big_idea": "Nature and Wellness", "big_idea_id": 3, "optional": true, "theme1": "How to Balance Social and School Activities", "theme2": "Learning to Relax", "linguistic_competences": ["Present Perfect Continuous to discuss ongoing efforts to balance social and school activities", "Second conditional for expressing hypothetical situations about improving balance", "Modals for possibility to suggest strategies for balancing social life, schoolwork, and relaxation"]}, {"number": 8, "scenario": "My Multilingual Self", "big_idea": "Being Local and Global Citizens", "big_idea_id": 4, "optional": true, "theme1": "The Benefits of Multilingualism", "theme2": "Language Is an Important Skill", "linguistic_competences": ["Reported speech for discussing opinions on multilingualism", "Future Simple for predictions", "Modals of ability for language proficiency"]}]};
+
+const CURRICULUM = {"11": [{"number": 1, "scenario": "Our Town Council", "big_idea": "Being Local and Global Citizens", "big_idea_id": 4, "theme1": "How Our Town Operates", "theme2": "How We Share Our Voice in the Community", "linguistic_competences": ["Passive voice to explain support structures", "Reported speech", "Modals 'can', 'should', 'must', 'may', 'might'"]}, {"number": 2, "scenario": "Our Changing Forests", "big_idea": "Nature and Wellness", "big_idea_id": 3, "theme1": "I Explored the Ecological History Of...", "theme2": "How Our Ecology Is Changing", "linguistic_competences": ["Present Perfect", "First and second conditional", "Comparatives"]}, {"number": 3, "scenario": "Managing Stress in Changing Times", "big_idea": "Nature and Wellness", "big_idea_id": 3, "theme1": "Breathing to Relax", "theme2": "Forest Bathing and other Biohacks", "linguistic_competences": ["Gerunds", "Modals for advice", "Present Continuous for trends"]}, {"number": 4, "scenario": "Preserving Our Heritage", "big_idea": "Family and Society", "big_idea_id": 2, "theme1": "Learning How We Take Care of Our Past", "theme2": "What Should We Preserve in the Future?", "linguistic_competences": ["Relative clauses like 'which' and 'where'", "Past Simple vs. Present Perfect", "Future Simple for predictions"]}, {"number": 5, "scenario": "Panama's Role in the World", "big_idea": "Being Local and Global Citizens", "big_idea_id": 4, "theme1": "The Importance of Panama in Global Trade", "theme2": "How the Canal Impacts Panama's Future", "linguistic_competences": ["Passive voice", "Second and third conditionals", "Present Perfect Continuous"]}, {"number": 6, "scenario": "Entrepreneurial Spirit", "big_idea": "Expressing Ourselves and Connecting with Others", "big_idea_id": 1, "theme1": "My Genius Innovations", "theme2": "How to Market a Business Idea", "linguistic_competences": ["First conditional", "Present Perfect for innovations", "Future Continuous"]}, {"number": 7, "scenario": "Intelligent Robots", "big_idea": "Being Local and Global Citizens", "big_idea_id": 4, "optional": true, "theme1": "What Is Artificial Intelligence?", "theme2": "How Technology Changes Society", "linguistic_competences": ["Conditional forms", "Future Simple", "Passive voice"]}, {"number": 8, "scenario": "International English", "big_idea": "Being Local and Global Citizens", "big_idea_id": 4, "optional": true, "theme1": " How English Is Used in Workplaces Globally.", "theme2": " What Communication Skills Are Important in the Workplace?", "linguistic_competences": ["Present Perfect", "Modals for necessity: must, could, should, and can", "Indirect Questions"]}], "12": [{"number": 1, "scenario": "Supporting Our Community", "big_idea": "Family and Society", "big_idea_id": 2, "theme1": "How Does the Government Support Communities?", "theme2": "Volunteering in Our Community", "linguistic_competences": ["Passive voice to explain support structures", "Modals for necessity", "Present Perfect Continuous for detailed descriptions"]}, {"number": 2, "scenario": "My Personal Success Story", "big_idea": "Expressing Ourselves and Connecting with Others", "big_idea_id": 1, "theme1": "How I Am Successful", "theme2": "Saving for Future Goals!", "linguistic_competences": ["Present Perfect to reflect achievements", "Future Continuous to describe long-term goals", "First conditional to discuss future success"]}, {"number": 3, "scenario": "Exploring Our Global Community", "big_idea": "Family and Society", "big_idea_id": 2, "theme1": "A Dream Trip Around the World", "theme2": "What Can I Learn From Other Cultures?", "linguistic_competences": ["Second conditional for hypothetical travel experiences", "Superlatives for comparing places", "Past Continuous to narrate past experiences"]}, {"number": 4, "scenario": "International Communication", "big_idea": "Being Local and Global Citizens", "big_idea_id": 4, "theme1": "Introducing Panama to the World", "theme2": "Communicating Panama's Importance", "linguistic_competences": ["Passive voice to introduce Panama's role", "Modals of necessity in professional settings", "Relative clauses to add information"]}, {"number": 5, "scenario": "Robots on Earth and in Space", "big_idea": "Being Local and Global Citizens", "big_idea_id": 4, "theme1": "How Robots Are Used in Panama", "theme2": "The Future Exploration of Space", "linguistic_competences": ["Future Perfect for discussing technology impacts", "Passive voice for scientific reporting", "Zero conditional for cause-effect scenarios"]}, {"number": 6, "scenario": "Checking in on Health", "big_idea": "Nature and Wellness", "big_idea_id": 3, "theme1": "Using Health Technology to Form Good Habits", "theme2": "Healthy Minds for Healthy Bodies", "linguistic_competences": ["Present Perfect Continuous to highlight ongoing health efforts and routines", "Second conditional to discuss hypothetical situations about improving well-being", "Modals for possibility to suggest health strategies or recommendations"]}, {"number": 7, "scenario": "Learning To Balance", "big_idea": "Nature and Wellness", "big_idea_id": 3, "optional": true, "theme1": "How to Balance Social and School Activities", "theme2": "Learning to Relax", "linguistic_competences": ["Present Perfect Continuous to discuss ongoing efforts to balance social and school activities", "Second conditional for expressing hypothetical situations about improving balance", "Modals for possibility to suggest strategies for balancing social life, schoolwork, and relaxation"]}, {"number": 8, "scenario": "My Multilingual Self", "big_idea": "Being Local and Global Citizens", "big_idea_id": 4, "optional": true, "theme1": "The Benefits of Multilingualism", "theme2": "Language Is an Important Skill", "linguistic_competences": ["Reported speech for discussing opinions on multilingualism", "Future Simple for predictions", "Modals of ability for language proficiency"]}]};
+
         const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzDGgn5f5NmOlYTf9FKKogZ9-ngM_LcSsv9FTxgYT6Rg6aVLexAsDuE0XuTRK8FH89W/exec';
 
         // Estado de sincronización
@@ -1455,14 +1459,14 @@
 
                     <!-- Formulario nueva actividad -->
                     <div id="formActividad" style="display:none;background:#f0f9ff;border:1px solid #bae6fd;border-radius:10px;padding:16px;margin-bottom:14px;">
-                        <h4 style="margin:0 0 12px;color:#0369a1;">Nueva Actividad</h4>
-                        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:12px;">
+                        <h4 style="margin:0 0 12px;color:#0369a1;">➕ Nueva Actividad</h4>
+                        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:12px;">
                             <div>
                                 <label style="font-size:10px;font-weight:700;display:block;margin-bottom:3px;">FECHA:</label>
                                 <input type="date" id="actFecha" style="width:100%;padding:5px 8px;border:1px solid #ccc;border-radius:4px;font-size:12px;">
                             </div>
                             <div>
-                                <label style="font-size:10px;font-weight:700;display:block;margin-bottom:3px;">ACTIVIDAD:</label>
+                                <label style="font-size:10px;font-weight:700;display:block;margin-bottom:3px;">NOMBRE ACTIVIDAD:</label>
                                 <input type="text" id="actNombre" placeholder="Ej: Class discussion" style="width:100%;padding:5px 8px;border:1px solid #ccc;border-radius:4px;font-size:12px;">
                             </div>
                             <div>
@@ -1476,28 +1480,53 @@
                                 <label style="font-size:10px;font-weight:700;display:block;margin-bottom:3px;">PUNTOS MÁX:</label>
                                 <input type="number" id="actPuntos" value="5" min="1" max="100" style="width:100%;padding:5px 8px;border:1px solid #ccc;border-radius:4px;font-size:12px;">
                             </div>
-                            <div>
-                                <label style="font-size:10px;font-weight:700;display:block;margin-bottom:3px;">THEME:</label>
-                                <input type="text" id="actTheme" placeholder="Ej: Environment" style="width:100%;padding:5px 8px;border:1px solid #ccc;border-radius:4px;font-size:12px;">
-                            </div>
-                            <div>
-                                <label style="font-size:10px;font-weight:700;display:block;margin-bottom:3px;">SCENARIO:</label>
-                                <input type="text" id="actScenario" placeholder="Ej: At school" style="width:100%;padding:5px 8px;border:1px solid #ccc;border-radius:4px;font-size:12px;">
-                            </div>
-                            <div>
-                                <label style="font-size:10px;font-weight:700;display:block;margin-bottom:3px;">BIG IDEA:</label>
-                                <input type="text" id="actBigIdea" placeholder="Ej: Sustainability" style="width:100%;padding:5px 8px;border:1px solid #ccc;border-radius:4px;font-size:12px;">
-                            </div>
-                            <div>
-                                <label style="font-size:10px;font-weight:700;display:block;margin-bottom:3px;">APLICA A:</label>
-                                <div id="actGruposCheck" style="display:flex;flex-wrap:wrap;gap:4px;padding:4px 0;">
-                                    <label style="font-size:11px;display:flex;align-items:center;gap:3px;"><input type="checkbox" value="12A" checked> 12A</label>
-                                    <label style="font-size:11px;display:flex;align-items:center;gap:3px;"><input type="checkbox" value="12B" checked> 12B</label>
-                                    <label style="font-size:11px;display:flex;align-items:center;gap:3px;"><input type="checkbox" value="12C" checked> 12C</label>
-                                    <label style="font-size:11px;display:flex;align-items:center;gap:3px;"><input type="checkbox" value="12D" checked> 12D</label>
-                                    <label style="font-size:11px;display:flex;align-items:center;gap:3px;"><input type="checkbox" value="11D"> 11D</label>
+                        </div>
+                        <!-- Curriculum selectors -->
+                        <div style="background:#e0f2fe;border-radius:8px;padding:10px;margin-bottom:12px;">
+                            <div style="font-size:10px;font-weight:700;color:#0369a1;margin-bottom:8px;">📚 CURRICULUM MEDUCA</div>
+                            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;">
+                                <div>
+                                    <label style="font-size:10px;font-weight:700;display:block;margin-bottom:3px;">GRADO:</label>
+                                    <select id="actGradoCurr" onchange="actualizarCurriculumSelectors()" style="width:100%;padding:5px 8px;border:1px solid #93c5fd;border-radius:4px;font-size:12px;">
+                                        <option value="12">12°</option>
+                                        <option value="11">11°</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label style="font-size:10px;font-weight:700;display:block;margin-bottom:3px;">SCENARIO:</label>
+                                    <select id="actScenario" onchange="actualizarBigIdeaTheme()" style="width:100%;padding:5px 8px;border:1px solid #93c5fd;border-radius:4px;font-size:12px;">
+                                        <option value="">-- Seleccione --</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label style="font-size:10px;font-weight:700;display:block;margin-bottom:3px;">BIG IDEA:</label>
+                                    <input type="text" id="actBigIdea" readonly style="width:100%;padding:5px 8px;border:1px solid #93c5fd;border-radius:4px;font-size:12px;background:#fff;">
+                                </div>
+                                <div>
+                                    <label style="font-size:10px;font-weight:700;display:block;margin-bottom:3px;">THEME:</label>
+                                    <select id="actTheme" style="width:100%;padding:5px 8px;border:1px solid #93c5fd;border-radius:4px;font-size:12px;">
+                                        <option value="">-- Seleccione scenario --</option>
+                                    </select>
                                 </div>
                             </div>
+                        </div>
+                        <!-- Grupos y estudiantes -->
+                        <div style="margin-bottom:12px;">
+                            <label style="font-size:10px;font-weight:700;display:block;margin-bottom:6px;">APLICA A (seleccione grupos y marque estudiantes que participaron):</label>
+                            <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;">
+                                <label style="font-size:12px;display:flex;align-items:center;gap:4px;background:#e0f2fe;padding:4px 10px;border-radius:6px;cursor:pointer;">
+                                    <input type="checkbox" value="12A" onchange="actualizarEstudiantesForm()" checked> 12A</label>
+                                <label style="font-size:12px;display:flex;align-items:center;gap:4px;background:#e0f2fe;padding:4px 10px;border-radius:6px;cursor:pointer;">
+                                    <input type="checkbox" value="12B" onchange="actualizarEstudiantesForm()"> 12B</label>
+                                <label style="font-size:12px;display:flex;align-items:center;gap:4px;background:#e0f2fe;padding:4px 10px;border-radius:6px;cursor:pointer;">
+                                    <input type="checkbox" value="12C" onchange="actualizarEstudiantesForm()"> 12C</label>
+                                <label style="font-size:12px;display:flex;align-items:center;gap:4px;background:#e0f2fe;padding:4px 10px;border-radius:6px;cursor:pointer;">
+                                    <input type="checkbox" value="12D" onchange="actualizarEstudiantesForm()"> 12D</label>
+                                <label style="font-size:12px;display:flex;align-items:center;gap:4px;background:#fef3c7;padding:4px 10px;border-radius:6px;cursor:pointer;">
+                                    <input type="checkbox" value="11D" onchange="actualizarEstudiantesForm()"> 11D</label>
+                            </div>
+                            <!-- Estudiantes por grupo -->
+                            <div id="actEstudiantesPorGrupo"></div>
                         </div>
                         <div style="display:flex;gap:8px;">
                             <button class="btn btn-success" onclick="guardarNuevaActividad()">✔ Crear Actividad</button>
@@ -3137,14 +3166,77 @@
             localStorage.setItem('participacion_data', JSON.stringify(participacionData));
         }
 
+        function actualizarCurriculumSelectors() {
+            const grado = document.getElementById('actGradoCurr').value;
+            const scenarios = CURRICULUM[grado] || [];
+            const sel = document.getElementById('actScenario');
+            sel.innerHTML = '<option value="">-- Seleccione scenario --</option>' +
+                scenarios.map((s,i) => `<option value="${i}">${s.scenario}</option>`).join('');
+            document.getElementById('actBigIdea').value = '';
+            document.getElementById('actTheme').innerHTML = '<option value="">-- Seleccione scenario --</option>';
+        }
+
+        function actualizarBigIdeaTheme() {
+            const grado = document.getElementById('actGradoCurr').value;
+            const idx = document.getElementById('actScenario').value;
+            if (idx === '') {
+                document.getElementById('actBigIdea').value = '';
+                document.getElementById('actTheme').innerHTML = '<option>-- Seleccione scenario --</option>';
+                return;
+            }
+            const s = CURRICULUM[grado][parseInt(idx)];
+            if (!s) return;
+            document.getElementById('actBigIdea').value = s.big_idea || '';
+            document.getElementById('actTheme').innerHTML =
+                `<option value="${s.theme1}">${s.theme1}</option>` +
+                (s.theme2 ? `<option value="${s.theme2}">${s.theme2}</option>` : '');
+        }
+
+        function actualizarEstudiantesForm() {
+            const puntosMax = parseFloat(document.getElementById('actPuntos')?.value) || 5;
+            const grupos = Array.from(document.querySelectorAll('#formActividad input[type=checkbox]'))
+                .filter(c => ['12A','12B','12C','12D','11D'].includes(c.value) && c.checked)
+                .map(c => c.value);
+            const cont = document.getElementById('actEstudiantesPorGrupo');
+            if (grupos.length === 0) { cont.innerHTML = '<p style="color:#94a3b8;font-size:11px;">Seleccione al menos un grupo arriba.</p>'; return; }
+            cont.innerHTML = grupos.map(grupo => {
+                const lista = (sharedStudents[grupo] || []).slice().sort((a,b) => a.name.localeCompare(b.name,'es'));
+                if (lista.length === 0) return `<p style="color:#94a3b8;font-size:11px;">Grupo ${grupo}: sin estudiantes.</p>`;
+                return `<div style="margin-bottom:10px;">
+                    <div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:5px;display:flex;align-items:center;gap:8px;">
+                        <span>Grupo ${grupo}</span>
+                        <button type="button" onclick="marcarGrupo('${grupo}',true)" style="background:#16a34a;color:white;border:none;border-radius:4px;padding:2px 8px;font-size:10px;cursor:pointer;">✓ Todos</button>
+                        <button type="button" onclick="marcarGrupo('${grupo}',false)" style="background:#64748b;color:white;border:none;border-radius:4px;padding:2px 8px;font-size:10px;cursor:pointer;">✗ Ninguno</button>
+                    </div>
+                    <div style="display:flex;flex-wrap:wrap;gap:4px;">
+                        ${lista.map(s => `
+                        <label style="display:flex;align-items:center;gap:4px;background:white;border:1px solid #e2e8f0;
+                            border-radius:6px;padding:5px 9px;cursor:pointer;font-size:11px;font-weight:600;
+                            transition:background 0.15s;" onmouseover="this.style.background='#f0fdf4'" onmouseout="this.style.background='white'">
+                            <input type="checkbox" class="est-check-${grupo}" data-grupo="${grupo}" data-sid="${s.id}"
+                                style="width:14px;height:14px;cursor:pointer;">
+                            ${s.name}
+                        </label>`).join('')}
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function marcarGrupo(grupo, checked) {
+            document.querySelectorAll('.est-check-'+grupo).forEach(c => c.checked = checked);
+        }
+
         function abrirFormActividad() {
             document.getElementById('formActividad').style.display = 'block';
             document.getElementById('actFecha').value = new Date().toISOString().split('T')[0];
             document.getElementById('actNombre').value = '';
             document.getElementById('actPuntos').value = '5';
-            document.getElementById('actTheme').value = '';
-            document.getElementById('actScenario').value = '';
             document.getElementById('actBigIdea').value = '';
+            // Inicializar curriculum selectors
+            actualizarCurriculumSelectors();
+            // Mostrar estudiantes del grupo seleccionado por defecto (12A)
+            actualizarEstudiantesForm();
+            document.getElementById('formActividad').scrollIntoView({behavior:'smooth'});
         }
 
         function guardarNuevaActividad() {
@@ -3152,20 +3244,39 @@
             const nombre = document.getElementById('actNombre').value.trim();
             const skill = document.getElementById('actSkill').value;
             const puntos = parseFloat(document.getElementById('actPuntos').value) || 5;
-            const theme = document.getElementById('actTheme').value.trim();
-            const scenario = document.getElementById('actScenario').value.trim();
+            const theme = document.getElementById('actTheme').value;
+            const scenarioIdx = document.getElementById('actScenario').value;
+            const grado = document.getElementById('actGradoCurr').value;
+            const scenario = scenarioIdx !== '' ? (CURRICULUM[grado][parseInt(scenarioIdx)]?.scenario || '') : '';
             const bigIdea = document.getElementById('actBigIdea').value.trim();
-            const grupos = Array.from(document.querySelectorAll('#actGruposCheck input:checked')).map(c => c.value);
+
+            // Grupos seleccionados
+            const grupos = Array.from(document.querySelectorAll('#formActividad input[type=checkbox]'))
+                .filter(c => ['12A','12B','12C','12D','11D'].includes(c.value) && c.checked)
+                .map(c => c.value);
 
             if (!fecha || !nombre) { alert('Complete fecha y nombre de actividad'); return; }
             if (grupos.length === 0) { alert('Seleccione al menos un grupo'); return; }
 
+            // Registros de estudiantes marcados en el form
+            const registros = {};
+            document.querySelectorAll('#actEstudiantesPorGrupo input[data-sid]:checked').forEach(chk => {
+                const grupo = chk.dataset.grupo;
+                const sid = chk.dataset.sid;
+                if (!registros[grupo]) registros[grupo] = {};
+                registros[grupo][sid] = puntos; // puntos completos por participar
+            });
+
             const act = { id: Date.now().toString(), fecha, nombre, skill, puntos, theme, scenario, bigIdea, grupos, registros: {} };
+            // Fusionar registros por grupo en el formato del sistema
+            Object.keys(registros).forEach(g => {
+                Object.assign(act.registros, registros[g]);
+            });
+
             participacionData.actividades.push(act);
             saveParticipacion();
             document.getElementById('formActividad').style.display = 'none';
             renderParticipacion();
-            alert('Actividad creada. Ahora selecciónela para registrar participantes.');
         }
 
         function abrirRegistro(actId) {
