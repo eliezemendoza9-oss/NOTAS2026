@@ -3001,25 +3001,13 @@ const CURRICULUM = {"11": [{"number": 1, "scenario": "Our Town Council", "big_id
 
                     localStorage.setItem('syncPending', '');
 
-                    // Cargar participacion desde su propia hoja
-                    window._partCallback = function(pdata) {
-                        if (pdata && pdata.success && pdata.actividades) {
-                            localStorage.setItem('participacion_data', JSON.stringify({actividades: pdata.actividades}));
-                        }
-                        var os = document.getElementById('_partScript');
-                        if (os) os.remove();
-                        bar.textContent = '✅ Datos cargados desde Google Sheets. Recargando...';
-                        setTimeout(() => location.reload(), 800);
-                    };
-                    var ps = document.createElement('script');
-                    ps.id = '_partScript';
-                    ps.src = APPS_SCRIPT_URL + '?action=loadParticipacion&callback=_partCallback&t=' + Date.now();
-                    ps.onerror = function() {
-                        this.remove();
-                        bar.textContent = '✅ Datos cargados. Recargando...';
-                        setTimeout(() => location.reload(), 800);
-                    };
-                    document.head.appendChild(ps);
+                    // Participacion viene incluida en data
+                    if (data.participacion && data.participacion.actividades) {
+                        localStorage.setItem('participacion_data', JSON.stringify(data.participacion));
+                    }
+
+                    bar.textContent = '✅ Datos cargados desde Google Sheets. Recargando...';
+                    setTimeout(() => location.reload(), 800);
                 } catch(e) {
                     bar.textContent = '⚠️ Error al cargar datos. Intente de nuevo.';
                     setTimeout(updateSyncBar, 3000);
